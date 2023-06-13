@@ -1,0 +1,72 @@
+system design study
+
+  1. SCALE FROM ZERO TO MILLIONS OF USERS
+
+        browser      --------> dns lookup
+        mobile app    ------->  dns lookup
+                      --------> single web server   <---> CRUD database   --> sql database (rdbms)  
+                                                                          -->nosql database (key-value/graph/column/document)
+                                                                          
+        Non-relational databases might be the right choice if: 
+         a. app requires super-low latency
+         b. data are unstructured, or you do not have any relational data
+         c. only need to serialize and deserialize data (JSON, XML, YAML, etc.
+         d. need to store a massive amount of data.
+
+Vertical scaling vs horizontal scaling
+   vertical scaling -->scal up via adding more memory/cpu resources on the same server   ---hardware limit, single point of failure. no failover and redundancy. 
+   horizontal scaling --> scal out --> more computational nodes.
+   
+   
+   so add a load balancer -> web server 1
+                          -> web server 2
+   
+   load balancer will expose public ip and it uses private ip to communiate with web servers.
+   
+   but how about database layer as it becomes a single point of failure.
+   
+   add master/slave  --- database replication
+   
+   web server1
+   web server2 ----> write to master
+               ----> read to slaves //read write separation.  one master can have multiple read-only slaves and use db replication to sync data.
+               
+   better performance as master only handles update while slaves proceed queries in parallel
+   high availability. if one slave down, no impact, if master is down, elect new master./prompt new master and some auto recovery script...
+   
+   next is to host static file in CDN. ---caching..
+   reduce web server and database workload.
+     A CDN is a network of geographically dispersed servers used to deliver static content. CDN servers cache static content like images, videos, CSS, JavaScript files, etc
+     To minimize the distance between the visitors and your website’s server, a CDN stores a cached version of its content in multiple geographical locations (a.k.a., points of presence, or PoPs). Each PoP contains a number of caching servers responsible for content delivery to visitors within its proximity.
+   
+   or Memcached cache. use api to detemine if object is in cache (code level )
+   
+   first check if object in cache or not. if yes, return it directly. otherwise read from database, store in cache and return.
+   web server --> cache server
+               --> db server
+               
+   when to use cache ---> read frequently but modify infrequently. 
+                          expiration policy
+                          consistency  --This involves keeping the data store and the cache in sync. it can happen as data update on database and cache won't happen in a single transaction.
+                          mitigate failures --- spof of cache layer
+                          eviction policy --Once the cache is full, any requests to add items to the cache might cause existing items to be removed
+                                 Least-recently-used --LRU  Least Frequently Used (LFU) or First in First Out (FIFO) 
+                                       LRU -- like a stack. latest accessed will be on the top. and bottom will be evicted.
+                                       LFU --- take access time into account. keep track of how many times the cache request has been used.  It requires three data structures. One is a hash table that is used to cache the key/values so that given a key we can retrieve the cache entry at O(1). The second one is a double linked list for each frequency of access.
+                          
+                          
+   next --> stateless web layer
+      Now it is time to consider scaling the web tier horizontally. For this, we need to move state (for instance user session data) out of the web tier. A good practice is to store session data in
+the persistent storage such as relational database or NoSQL. Each web server in the cluster can access state data from databases. This is called stateless web tier.
+      sticky session can route the same requests to the same server. however it adds difficulty on adding/removing server and failover.
+      
+      then we can add web servers into a auto-scale group and then use non-sql db to persist stateful data.
+      
+      so far so good, how about expanding business across geographical areas... multiple data centres.
+          how to direct traffic to the nearest data center depending on where a user is located.
+          data synchronization
+          test and deployment
+          
+
+
+                      
