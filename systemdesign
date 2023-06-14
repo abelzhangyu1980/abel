@@ -68,5 +68,20 @@ the persistent storage such as relational database or NoSQL. Each web server in 
           test and deployment
           
 
+database sharding. distribute data to seversal sub databases based on sharding key.
+  resharding data if a single shard could no longer hold more data due to rapid growth. 2) Certain shards might experience shard exhaustion faster than others due to uneven data distribution
+  celebrity problem or hotkey problem.
+  Join and de-normalization:
+  
+  summary:
+• Keep web tier stateless
+• Build redundancy at every tier
+• Cache data as much as you can
+• Support multiple data centers
+• Host static assets in CDN
+• Scale your data tier by sharding
+• Split tiers into individual services
+• Monitor your system and use automation tools
 
-                      
+power of two:
+
