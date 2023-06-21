@@ -85,3 +85,22 @@ database sharding. distribute data to seversal sub databases based on sharding k
 
 power of two:
 
+rate limiter  (client vs server side) cilent side, use timer , server side, at api gateway. at web server/app server..
+Algorithms for rating limiting 
+1. token bucket
+   The token bucket algorithm takes two parameters:
+     • Bucket size: the maximum number of tokens allowed in the bucket
+     • Refill rate: number of tokens put into the bucket every second
+2. leaking bucket.
+     . bucket size. implemented at FIFO queue. 
+       fixed processing rate. / Outflow rate / fixed rate. 
+3, Fixed window counter
+    . • The algorithm divides the timeline into fix-sized time windows and assign a counter for each window. and each request increases the counter.   Once the counter reaches the pre-defined threshold, new requests are dropped until a new
+time window starts.
+       . A major problem with this algorithm is that a burst of traffic at the edges of time windows could cause more requests than allowed quota to go through. spike in traffic within two connecting windows is an issue
+          as total number of second half of current window and first half of next window could exceed the allowed quota.
+       
+       
+       
+    
+
