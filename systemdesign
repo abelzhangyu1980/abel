@@ -100,7 +100,20 @@ time window starts.
        . A major problem with this algorithm is that a burst of traffic at the edges of time windows could cause more requests than allowed quota to go through. spike in traffic within two connecting windows is an issue
           as total number of second half of current window and first half of next window could exceed the allowed quota.
        
-       
+ 4. sliding window log algorithm
+      to fix fixed window counter issue. hence we check the number_of_requests made in last time_window_sec seconds. So this process of checking for a fixed window of time_window_sec seconds on every request, makes this approach a sliding window where the fixed window of size time_window_sec seconds
+      is moving forward with each request. 每个新的请求到达后，检查从这个时间往前的窗口（一分钟）有多少个请求，如果超过则拒绝当前请求。如果有过期的则删除。
+      比如允许一分钟内有两个请求。
+      在1:00:01的时候收到第一个请求。
+      时间戳 1:00:01 添加到log里面，最近一秒只有一个请求，允许。
+      1:00:30收到第二个请求，合法
+
+      1:00:01
+      1:00:30
+
+      1:00:50收到第三个请求，最近一分钟（12:59:50-1:00:50)）之间有三个请求，拒绝。
+
+     1:01：40秒收到第四个请求，往前看一分钟，1:00:40 - 1:01:40之间有两个（加上当前），合法 。 同时删除窗口之外的两个请求。
        
     
 
