@@ -115,6 +115,18 @@ time window starts.
 
      1:01：40秒收到第四个请求，往前看一分钟，1:00:40 - 1:01:40之间有两个（加上当前），合法 。 同时删除窗口之外的两个请求。
 
+    pros: Rate limiting implemented by this algorithm is very accurate. In any rolling window,requests will not exceed the rate limit.
+    cons: The algorithm consumes a lot of memory because even if a request is rejected, its timestamp might still be stored in memory.
+
+  5. Sliding window counter algorithm
+     The sliding window counter algorithm is a hybrid approach that combines the fixed window counter and sliding window log
+      Assume the rate limiter allows a maximum of 7 requests per minute, and there are 5 requests in the previous minute and 3 in the current minute. For a new request that arrives at a 30%
+position in the current minute, the number of requests in the rolling window is calculated using the following formula:
+• Requests in current window + requests in the previous window * overlap percentage of the rolling window and previous window
+  • It only works for not-so-strict look back window. It is an approximation of the actual rate
+because it assumes requests in the previous window are evenly distributed
+
+
 
        
     
