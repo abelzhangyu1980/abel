@@ -178,3 +178,8 @@ A hash function is a function that maps one piece of data—typically describing
 问题来了，对「数据」进行哈希映射得到一个结果要怎么找到存储该数据的节点呢？
 
 答案是，映射的结果值往顺时针的方向的找到第一个节点，就是存储该数据的节点。
+![Alt text](h0.png?raw=true "Title")
+![Alt text](h1.png?raw=true "Title")
+![Alt text](h2.png?raw=true "Title")
+![Alt text](h3.png?raw=true "Title")
+![Alt text](h4.png?raw=true "Title")
