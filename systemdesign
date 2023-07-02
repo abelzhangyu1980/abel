@@ -160,3 +160,22 @@ remapped
 现在我们将objectA、objectB、objectC、objectD四个对象通过特定的Hash函数计算出对应的key值，然后散列到Hash环上,然后从数据所在位置沿环顺时针“行走”，第一台遇到的服务器就是其应该定位到的服务器。
     
 ![Alt text](consistent%20hash.png?raw=true "Title")
+但是有一个很致命的问题，如果节点数量发生了变化 （新增，删除）），也就是在对系统做扩容或者缩容时，必须迁移改变了映射关系的数据，否则会出现查询不到数据的问题。
+
+一致哈希算法也用了取模运算，但与哈希算法不同的是，哈希算法是对节点的数量进行取模运算，而一致哈希算法是对 2^32 进行取模运算，是一个固定的值。（hash是一个integer，最大就是 2^32）
+Consistent Hashing is a distributed hashing scheme that operates independently of the number of servers or objects in a distributed hash table
+
+A hash function is a function that maps one piece of data—typically describing some kind of object, often of arbitrary size—to another piece of data, typically an integer, known as hash code, or simply hash.
+
+我们可以把一致哈希算法是对 2^32 进行取模运算的结果值组织成一个圆环，就像钟表一样，钟表的圆可以理解成由 60 个点组成的圆，而此处我们把这个圆想象成由 2^32 个点组成的圆，这个圆环被称为哈希环，如下图：
+
+一致性哈希要进行两步哈希：
+
+第一步：对存储节点进行哈希计算，也就是对存储节点做哈希映射，比如根据节点的 IP 地址进行哈希；
+第二步：当对数据进行存储或访问时，对数据进行哈希映射；
+所以，一致性哈希是指将「存储节点」和「数据」都映射到一个首尾相连的哈希环上。
+
+问题来了，对「数据」进行哈希映射得到一个结果要怎么找到存储该数据的节点呢？
+
+答案是，映射的结果值往顺时针的方向的找到第一个节点，就是存储该数据的节点。
+
