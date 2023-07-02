@@ -159,4 +159,4 @@ remapped
 2.3映射数据
 现在我们将objectA、objectB、objectC、objectD四个对象通过特定的Hash函数计算出对应的key值，然后散列到Hash环上,然后从数据所在位置沿环顺时针“行走”，第一台遇到的服务器就是其应该定位到的服务器。
     
-![Alt text](consistenthash.png?raw=true "Title")
+![Alt text](consistent%20hash.png?raw=true "Title")
