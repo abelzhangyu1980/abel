@@ -422,7 +422,8 @@ properties as shown in Figure 6-1.
 
 这个过程，证明了要满足分区容错性的分布式系统，只能在一致性和可用性两者中，选择其中一个。
 
-
+. Quorum consensus 
+    A quorum is the minimum number of members that must be present at any meeting to consider the proceedings of the meeting valid.
 
 
 
