@@ -373,3 +373,54 @@ public class HashUtils {
 
 Find affected keys
 When a server is added or removed, a fraction of data needs to be redistributed. How can we find the affected range to redistribute the keys?
+
+
+CAP theorem
+CAP theorem states it is impossible for a distributed system to simultaneously provide more
+than two of these three guarantees: consistency, availability, and partition tolerance. Let us
+establish a few definitions.
+Consistency: consistency means all clients see the same data at the same time no matter which node they connect to.
+Availability: availability means any client which requests data gets a response even if some of the nodes are down.
+Partition Tolerance: a partition indicates a communication break between two nodes.
+Partition tolerance means the system continues to operate despite network partitions. CAP theorem states that one of the three properties must be sacrificed to support 2 of the 3
+properties as shown in Figure 6-1.
+
+一致性指“all nodes see the same data at the same time”，即所有节点在同一时间的数据完全一致。一致性是因为多个数据拷贝下并发读写才有的问题，因此理解时一定要注意结合考虑多个数据拷贝下并发读写的场景。
+
+对于一致性，可以分为从客户端和服务端两个不同的视角。
+
+客户端
+从客户端来看，一致性主要指的是多并发访问时更新过的数据如何获取的问题。
+
+服务端
+从服务端来看，则是更新如何分布到整个系统，以保证数据最终一致。
+
+对于一致性，可以分为强/弱/最终一致性三类
+
+从客户端角度，多进程并发访问时，更新过的数据在不同进程如何获取的不同策略，决定了不同的一致性。
+
+强一致性
+对于关系型数据库，要求更新过的数据能被后续的访问都能看到，这是强一致性。
+
+弱一致性
+如果能容忍后续的部分或者全部访问不到，则是弱一致性。
+
+最终一致性
+如果经过一段时间后要求能访问到更新后的数据，则是最终一致性。
+
+可用性指“Reads and writes always succeed”，即服务在正常响应时间内一直可用。
+
+好的可用性主要是指系统能够很好的为用户服务，不出现用户操作失败或者访问超时等用户体验不好的情况。可用性通常情况下可用性和分布式数据冗余，负载均衡等有着很大的关联。
+
+分区容错性指“the system continues to operate despite arbitrary message loss or failure of part of the system”，即分布式系统在遇到某节点或网络分区故障的时候，仍然能够对外提供满足一致性或可用性的服务。
+
+作为一个分布式系统，它和单机系统的最大区别，就在于网络，现在假设一种极端情况，N1和N2之间的网络断开了，我们要支持这种网络异常，相当于要满足分区容错性，能不能同时满足一致性和响应性呢？还是说要对他们进行取舍。假设在N1和N2之间网络断开的时候，有用户向N1发送数据更新请求，那N1中的数据V0将被更新为V1，由于网络是断开的，所以分布式系统同步操作M，所以N2中的数据依旧是V0；这个时候，有用户向N2发送数据读取请求，由于数据还没有进行同步，应用程序没办法立即给用户返回最新的数据V1，怎么办呢？
+
+有二种选择，第一，牺牲数据一致性，响应旧的数据V0给用户；第二，牺牲可用性，阻塞等待，直到网络连接恢复，数据更新操作M完成之后，再给用户响应最新的数据V1。
+
+这个过程，证明了要满足分区容错性的分布式系统，只能在一致性和可用性两者中，选择其中一个。
+
+
+
+
+
