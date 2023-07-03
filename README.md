@@ -371,4 +371,5 @@ public class HashUtils {
     }
 }
 
-
+Find affected keys
+When a server is added or removed, a fraction of data needs to be redistributed. How can we find the affected range to redistribute the keys?
