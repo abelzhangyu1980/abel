@@ -426,4 +426,18 @@ properties as shown in Figure 6-1.
     A quorum is the minimum number of members that must be present at any meeting to consider the proceedings of the meeting valid.
 
 
+一致性模型。
+ Strong consistency: any read operation returns a value corresponding to the result of the most updated write data item. A client never sees out-of-date data.
+ Weak consistency: subsequent read operations may not see the most updated value.
+ Eventual consistency: this is a specific form of weak consistency. Given enough time, all updates are propagated, and all replicas are consistent.
+
+  Strong consistency is usually achieved by forcing a replica not to accept new reads/writes until every replica has agreed on current write.
+
+Inconsistency resolution: versioning ， 版本
+Replication gives high availability but causes inconsistencies among replicas
+
+Versioning and
+vector locks are used to solve inconsistency problems. Versioning means treating each data modification as a new immutable version of data. 
+
+
 
