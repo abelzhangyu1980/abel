@@ -439,5 +439,14 @@ Replication gives high availability but causes inconsistencies among replicas
 Versioning and
 vector locks are used to solve inconsistency problems. Versioning means treating each data modification as a new immutable version of data. 
 
+A vector clock is a [server, version] pair associated with a data item. It can be used to check if one version precedes, succeeds, or in conflict with others.
+Assume a vector clock is represented by D([S1, v1], [S2, v2], …, [Sn, vn]), where D is a data
+item, v1 is a version counter, and s1 is a server number, etc. If data item D is written to server
+Si, the system must perform one of the following tasks.
+• Increment vi if [Si, vi] exists.
+• Otherwise, create a new entry [Si, 1].
+
+The conflict is resolved by the client and updated data is sent to the server
+![Alt text](v1.png?raw=true "Title")
 
 
