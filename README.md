@@ -449,4 +449,13 @@ Si, the system must perform one of the following tasks.
 The conflict is resolved by the client and updated data is sent to the server
 ![Alt text](v1.png?raw=true "Title")
 
+[server: version] pairs in the vector clock could grow rapidly.
+
+gossip protocol
+Gossip protocol 也叫 Epidemic Protocol （流行病协议），是基于流行病传播方式的节点或者进程之间信息交换的协议。。
+ Gossip协议是基于六度分隔理论（Six Degrees of Separation）哲学的体现，简单的来说，一个人通过6个中间人可以认识世界任何人。数学公式是：
+ ![Alt text](g1.png?raw=true "Title")
+​n表示复杂度，N表示人的总数，W表示每个人的联系宽度。依据邓巴数，即每个人认识150人，其六度就是150^6
+​＝11,390,625,000,000（约11.4万亿）。
+
 
