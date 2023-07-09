@@ -468,5 +468,5 @@ There are probably hundreds of variants of specific Gossip-like protocols becaus
 节点只接收消息不反馈结果。
 每次散播消息都选择尚未发送过的节点进行散播。
 收到消息的节点不回传散播：A -> B，那么B进行散播的时候，不再发给 A。
-
+![Alt text](g2.gif?raw=true "Title")
 
