@@ -487,4 +487,9 @@ There are probably hundreds of variants of specific Gossip-like protocols becaus
        上述优缺点的本质是因为Gossip是一个带冗余的容错算法，是一个最终一致性算法，虽然无法保证在某个时刻所有节点状态一致，但可以保证在“最终所有节点一致”，“最终”的时间是一个理论无法明确的时间点。所以适合于AP场景的数据一致性处理，常见应用有：P2P网络通信、Apache Cassandra、Redis Cluster、Consul。
 ![Alt text](g3.png?raw=true "Title")
        
-       
+Dynamo: Amazon’s Highly Available Key-value Store
+Dynamo sacrifices consistency under certain failure scenarios  --AP.
+Dynamo uses a synthesis of well known techniques to achieve scalability and availability: Data is partitioned and replicated using consistent hashing [10], and consistency is facilitated by object versioning [12]. The consistency among replicas during updates is maintained by a quorum-like technique and a decentralized replica synchronization protocol.
+ Dynamo employs a gossip based distributed failure detection and membership protocol. Dynamo is a completely decentralized system with minimal need for manual administration. Storage nodes can be added and removed from Dynamo without requiring any manual partitioning or redistribution
+![Alt text](g4.png?raw=true "Title")
+ 
