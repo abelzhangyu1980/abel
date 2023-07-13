@@ -1,3 +1,5 @@
+A standard UUID code contains 32 hex digits along with 4 “-” symbols, which makes its length equal to 36 characters. There is also a Nil UUID code where all bits are set to zero.
+
 GUIDs are large, enormous numbers that are nearly guaranteed to be unique. They are usually 128 bits long and look like this in hexadecimal:
 
 30dd879c-ee2f-11db-8314-0800200c9a66
@@ -55,3 +57,70 @@ Now let’s say everyone on Earth gets their own copy of the internet, to keep t
 ![Alt text](guid1.png?raw=true "Title")
 ![Alt text](guid2.png?raw=true "Title")
 
+123e4567-e89b-42d3-a456-556642440000
+xxxxxxxx-xxxx-Bxxx-Axxx-xxxxxxxxxxxx   (8-4-4-4-12 = 32 *4=128. A can be 0-F)
+
+3.1. UUID Variant
+In the example above, A denotes the variant that defines the layout of the UUID. All the other bits in the UUID depend on the layout of the variant field. 
+Therefore, the variant represents the three most significant bits of A:
+
+  MSB1    MSB2    MSB3
+   0       X       X     reserved (0)
+   1       0       X     current variant (2)
+   1       1       0     reserved for Microsoft (6)
+   1       1       1     reserved for future (7)
+a/A --->1010  
+Above, the A value in the example UUID is “a”, which is 10xx in binary. So, the layout variant is 2.
+
+Similarly, B represents the version. In the example UUID, the value of B is 4, which means it is using version 4.
+
+For any UUID object inside Java, we can check the variant and the version using the .variant() and the .version() methods:
+
+UUID uuid = UUID.randomUUID();
+int variant = uuid.variant();
+int version = uuid.version();
+
+Moreover, there are five different versions for variant 2 UUIDs:
+
+Time-Based (UUIDv1)
+DCE Security (UUIDv2)
+Name Based (UUIDv3 and UUIDv5)
+Random (UUIDv4)
+
+IBM P8 uses variant 2 and version 4 (random)
+4D3AB07A-76AD-4D9F-8EB1-9A1EA7B7A91B
+
+UUID version 1 uses the current timestamp and the MAC address of the device generating the UUID. In particular, the timestamp is measured in units of 100 nanoseconds from October 15, 1582. Still, if privacy is a concern, we can use a random 48-bit number instead of the MAC address.
+
+Finally, we already described how to generate version 4 UUID. Again, we call the randomUUID() method the UUID class provides to get the UUIDv4.
+
+4.1. Version 1
+UUID version 1 uses the current timestamp and the MAC address of the device generating the UUID. In particular, the timestamp is measured in units of 100 nanoseconds from October 15, 1582. Still, if privacy is a concern, we can use a random 48-bit number instead of the MAC address.
+
+With this in mind, let's generate the least significant and most significant 64 bits as long values:
+
+private static long get64LeastSignificantBitsForVersion1() {
+    Random random = new Random();
+    long random63BitLong = random.nextLong() & 0x3FFFFFFFFFFFFFFFL;
+    long variant3BitFlag = 0x8000000000000000L;
+    return random63BitLong | variant3BitFlag;
+}
+Copy
+Above, we combine two long values representing the last 63 bits of a random long value and the 3-bit variant flag. Next, we create the 64 most significant bits using a timestamp:
+
+private static long get64MostSignificantBitsForVersion1() {
+    final long currentTimeMillis = System.currentTimeMillis();
+    final long time_low = (currentTimeMillis & 0x0000_0000_FFFF_FFFFL) << 32; 
+    final long time_mid = ((currentTimeMillis >> 32) & 0xFFFF) << 16;
+    final long version = 1 << 12; 
+    final long time_hi = ((currentTimeMillis >> 48) & 0x0FFF);
+    return time_low | time_mid | version | time_hi;
+}
+Copy
+We can then pass these two values to the constructor of the UUID:
+
+public static UUID generateType1UUID() {
+    long most64SigBits = get64MostSignificantBitsForVersion1();
+    long least64SigBits = get64LeastSignificantBitsForVersion1();
+    return new UUID(most64SigBits, least64SigBits);
+}
