@@ -1,0 +1,46 @@
+GUIDs are large, enormous numbers that are nearly guaranteed to be unique. They are usually 128 bits long and look like this in hexadecimal:
+
+30dd879c-ee2f-11db-8314-0800200c9a66
+
+The format is a well-defined sequence of 32 hex digits grouped into chunks of 8-4-4-4-12. This gives us 2^128 or about 10^38 numbers.
+
+128bits -> 16 bytes -> 32 hex digits.
+
+Each hexadecimal digit represents four bits (binary digits), also known as a nibble (or nybble).[1]
+For example, an 8-bit byte can have values ranging from 00000000 to 11111111 in binary form, which can be conveniently represented as 00 to FF in hexadecimal.
+
+0123456789abcdef 
+Hexadecimal is used in the transfer encoding Base16, in which each byte of the plaintext is broken into two 4-bit values and represented by two hexadecimal digits.
+
+In most current use cases, the letters A–F or a–f represent the values 10–15, while the numerals 0–9 are used to represent their decimal values.
+
+Hex Digits
+1 hex digit = 4 bits = 1 nibble.
+Hex	Binary	Decimal	 	Hex	Binary	Decimal
+0	0000	0	 	8	1000	8
+1	0001	1	 	9	1001	9
+2	0010	2	 	A	1010	10
+3	0011	3	 	B	1011	11
+4	0100	4	 	C	1100	12
+5	0101	5	 	D	1101	13
+6	0110	6	 	E	1110	14
+7	0111	7	 	F	1111	15
+
+16 Different Values
+There are 16 Hexadecimal digits. They are the same as the decimal digits up to 9, but then there are the letters A, B, C, D, E and F in place of the decimal numbers 10 to 15:
+
+Hexadecimal:	0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
+Decimal:	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15
+So a single Hexadecimal digit can show 16 different values instead of the normal 10.
+
+ounting
+Choose "Hexadecimal" below and watch it count:
+
+Base:
+16
+HexadecimalDecimalBinary0268435456 = 167016777216 = 16601048576 = 165065536 = 16404096 = 1630256 = 162016 = 16101 = 160© 2020 MathsIsFun.com v0.83
+After the "Ones" position is filled up (after F) the ones start back at 0, and we add 1 to the next position on the left (to show 1 lot of 16).
+
+And after that position reaches F, we do the same thing, and so on.
+
+As we move left, every number place is 16 times bigger.
