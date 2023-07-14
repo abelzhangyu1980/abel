@@ -492,4 +492,94 @@ Dynamo sacrifices consistency under certain failure scenarios  --AP.
 Dynamo uses a synthesis of well known techniques to achieve scalability and availability: Data is partitioned and replicated using consistent hashing [10], and consistency is facilitated by object versioning [12]. The consistency among replicas during updates is maintained by a quorum-like technique and a decentralized replica synchronization protocol.
  Dynamo employs a gossip based distributed failure detection and membership protocol. Dynamo is a completely decentralized system with minimal need for manual administration. Storage nodes can be added and removed from Dynamo without requiring any manual partitioning or redistribution
 ![Alt text](g4.png?raw=true "Title")
- 
+
+
+ vector clocks --向量时钟
+ 分布式系统中有两大问题，一没有全局时钟，二没有共享内存。很多时候我们都需要引入时间 的概念，譬如来确定事件之间的顺序和因果关系。那分布式系统中既然没有全局的时钟，我们又该如何确定事件的顺序呢？
+ Leslie Lamport在其1978年著名的论文《Time, clocks, and the ordering of events in a distributed system》中提出了逻辑时间，即用一个整数来表示一个事件的逻辑时间，以及happened-before 顺序。
+ 简而言之，每个线程都用一个integer来simulate它自己的时间，对于本地事件或者消息的发送和接收按照以下规则来更新时间。
+
+**每一次发生本地事件，该线程的时间+=1**
+**每一次发送消息，发送的线程的时间先+=1，然后再发送。发送的消息中会包含它的时间**
+**每一次接收消息，接收的线程先获取消息中带有的时间，再和它自己的local时间对比，取最大值后，再+=1作为自己新的local时间**
+因果历史（Causal History）
+因果历史是检查因果关系的一个直观的方法。每个线程维护一个集合，然后每次碰到local event，给这个event一个名字，然后加入到集合中。每次发送消息则发送自己的集合，每次接收消息则合并消息的集合。下图是一个例子：
+
+此时，要知道两个event之间的因果关系或者happened-before关系，只需要看他们对应的集合是否一个包含另一个，即set inclusion test。
+这样集合的表示虽然直观，但是并不compact，我们可以看到可以优化的地方。譬如当node B向node C发送{a1,a2,b1,b2,b3}的时候其实只需要发送最近的events，即{a2, b3}就行了。因为a2发生已经暗含了a2之前的A上的事件也已经发生了。b3也是同理，也暗含了b1, b2一定已经发生了。所以这里其实本质上对于每一个线程，我们只需要发送和记录一个数字就行了，这样优化以后得到的结果便是Vector Clock！所以从这个角度，VC其实就是Causal History的一种压缩表示，一种编码。
+![Alt text](v1.jpg?raw=true "Title")
+
+量时钟到底有什么用呢？举一个常见的工程应用：数据冲突检测。分布式系统中数据一般存在多个副本，多个副本可能被同时更新，这会引起副本间数据不一致，此时冲突检测就非常重要。基于向量时钟我们可以获得任意两个事件的顺序关系，结果要么是有因果关系（先后顺序），要么是没有因果关系（同时发生）。通过向量时钟，我们能够识别到如果两个数据更新操作是同时发生的关系，那么说明出现了数据冲突。后面我们会详细说明相关的实现。
+
+这里反向叙述方式, 介绍向量时钟。先举实际例子让读者有个感性认识，然后再说算法规则。
+二、举个例子
+向量时钟实际是一组版本号（版本号=逻辑时钟)，假设数据需要存放3份，需要3台db存储（用A，B，C表示），那么向量维度就是3，每个db有一个版本号，从0开始，这样就形成了一个向量版本 [A:0, B:0, C:0];
+Step 1： 初始状态下，所有机器都是 [A:0, B:0, C:0]；
+DB_A——> [A:0, B:0, C:0]
+DB_B——> [A:0, B:0, C:0]
+DB_C——> [A:0, B:0, C:0]
+
+Step 2: 假设现在应用是一个商场，现在录入一个肾6的价格 iphone6 price 5888； 客户端随机选择一个db机器写入。现假设选择了A。,数据大概是这样 ：
+{key=iphone_price; value=5888; vclk=[A:1,B:0,C:0]}
+
+Step 3: 接下来A会把数据同步给B和C；于是最终同步结果如下
+DB_A——> {key=iphone_price; value=5888; vclk=[ A:1,B:0,C:0]}
+DB_B——> {key=iphone_price; value=6888; vclk=[ A:1, B:0,C:0]}
+DB_C——> {key=iphone_price; value=5888; vclk=[ A:1,B:0,C:0]}
+
+Step 4：过了分钟，价格出现波动，升值到6888；于是某个业务员更新价格。这时候系统随机选择了B做为写入存储，于是结果看起来是这样：
+DB_A——> {key=iphone_price; value=5888; vclk=[A:1,B:0,C:0]}
+DB_B——> {key=iphone_price; value=6888; vclk=[A:1,B:1,C:0]}
+DB_C——> {key=iphone_price; value=5888; vclk=[A:1,B:0,C:0]}
+
+Step 5：于是B就把更新同步给其他几个存储
+DB_A——> {key=iphone_price; value=6888; vclk=[A:1, B:1,C:0]}
+DB_B——> {key=iphone_price; value=6888; vclk=[A:1,B:1,C:0]}
+DB_C——> {key=iphone_price; value=6888; vclk=[A:1, B:1,C:0]}
+
+到目前为止都是正常同步，下面开始演示一下不正常的情况。
+
+Step 6：价格再次发生波动，变成4000，这次选择C写入：
+DB_A——> {key=iphone_price; value=6888; vclk=[A:1, B:1,C:0]}
+DB_B——> {key=iphone_price; value=6888; vclk=[A:1,B:1,C:0]}
+DB_C——> {key=iphone_price; value=4000; vclk=[A:1, B:1,C:1]}
+
+Step 7: C把更新同步给A和B，因为某些问题，只同步到A，结果如下：
+DB_A——> {key=iphone_price; value=4000; vclk=[A:1, B:1, C:1]}
+DB_B——> {key=iphone_price; value=6888; vclk=[A:1,B:1,C:0]}
+DB_C——> {key=iphone_price; value=4000; vclk=[A:1, B:1,C:1]}
+
+Step 8：价格再次波动，变成6000元，系统选择B写入
+DB_A——> {key=iphone_price; value=6888; vclk=[A:1, B:1, C:1]}
+DB_B——> {key=iphone_price; value=6000; vclk=[A:1,B:2, C:0]}
+DB_C——> {key=iphone_price; value=4000; vclk=[A:1, B:1,C:1]}
+
+Step 9： 当B同步更新给A和C时候就出现问题了，A自己的向量时钟是 [A:1, B:1, C:1]， 而收到更新消息携带过来的向量时钟是 [A:1,B:2, C:0], B:2 比 B:1新，但是C:0却比C1旧。这时候发生不一致冲突。不一致问题如何解决？向量时钟策略并没有给出解决版本，留给用户自己去解决，只是告诉你目前数据存在冲突。
+
+作者：DaSE_Bee
+链接：https://www.jianshu.com/p/1eb729ac62c9
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+三、规则介绍
+版本号变更规则其实就2条，比较简单
+1、 每次修改数据，本节点的版本号 加1，例如上述 step 8中 向B写入，于是从B:1 变成 B:2, 其他节点的版本号不发生变更。
+2、 每次同步数据(这里需要注意，同步和修改是不一样的写操作哦), 会有三种情况：
+a： 本节点的向量版本都要比消息携带过来的向量版本低（小于或等于） 如本节点为 [A:1, B:2,C:3]}， 消息携带过来为 [A:1, B:2,C:4] 或 [A:2, B:3,C:4]等。 这时候合并规则取每个分量的最大值。
+b: 本节点的向量版本都要比比消息携带过来的向量版本高，这时候可以认为本地数据比同步过来的数据要新，直接丢弃要同步的版本。
+c: 出现冲突，如上述step 9中，有的分量版本大，有的分量版本小，无法判断出来到底谁是最新版本。就要进行冲突仲裁。
+
+四、冲突解决
+其实没有一个比较好的解决冲突的版本：就笔者目前所了解，加上时间戳算是一个策略。具体方法是再加一个维度信息：数据更新的时间戳（timestamp）。[A:1, B:2,C:4，ts:123434354] ，如果发生冲突，再比较一下两个数据的ts，大的数值说明比较后更新，选择它作为最终数据。并对向量时钟进行订正。
+
+因果关系判断规则
+如果时钟 V1 的每个逻辑时钟值都比时钟 V2 大，那么称 V1 比 V2 先发生。如： V1: [A:2,B:4,C:2] 与 V2: [A:1,B:2,C:1]
+如果不满足条件 1), 即有的值 V1 比 V2 大，有的 V2 比 V1 大，那么看做两个事件同时发生
+
+向量时钟通常用于检测 replication 之间的数据冲突。例如 Dynamo: Data Versioning With DynamoDB。
+
+
+SSTable 
+![Alt text](s1.jpg?raw=true "Title")
+SSTable 文件的内容分为 5 个部分，Footer、IndexBlock、MetaIndexBlock、FilterBlock 和 DataBlock。其中存储了键值对内容的就是 DataBlock，存储了布隆过滤器二进制数据的是 FilterBlock，DataBlock 有多个，FilterBlock 也可以有多个，但是通常最多只有 1 个，之所以设计成多个是考虑到扩展性，也许未来会支持其它类型的过滤器。另外 3 个部分为管理块，其中 IndexBlock 记录了 DataBlock 相关的元信息，MetaIndexBlock 记录了过滤器相关的元信息，而 Footer 则指出 IndexBlock 和 MetaIndexBlock 在文件中的偏移量信息，它是元信息的元信息，它位于 sstable 文件的尾部。下面我们至顶向下挨个分析每个结构
+
