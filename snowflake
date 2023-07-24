@@ -5,7 +5,7 @@ Twelve more bits represent a per-machine sequence number, to allow creation of m
 Snowflakes are sortable by time, because they are based on the time they were created.[1] Additionally, the time a snowflake was created can be calculated from the snowflake. 
 This can be used to get snowflakes (and their associated objects) that were created before or after a particular date.[2]
 
-
+![Alt text](snow1.png?raw=true "Title")
 
 Example
 A tweet produced by @Wikipedia in June 2022[3] has the snowflake ID 1541815603606036480. The number may be converted to binary as 00 0001 0101 0110 0101 1010 0001 0001 1111 0110 0010 00|01 0111 1010|0000 0000 0000, with pipe symbols denoting the three parts of the ID.
