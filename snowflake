@@ -13,3 +13,40 @@ A tweet produced by @Wikipedia in June 2022[3] has the snowflake ID 154181560360
 The first 41 (+ 1 top zero bit) bits convert to decimal as 367597485448. Add the value to the Twitter Epoch of 1288834974657 (in Unix time milliseconds),[4] the Unix time of the tweet is therefore 1656432460.105: June 28, 2022 16:07:40.105 UTC.
 The middle 10 bits 01 0111 1010 are the machine ID.
 The last 12 bits decode to all zero, meaning this tweet is the first tweet processed by the machine at the given millisecond.
+
+0  1                 41                 51        64
++--+------------------+------------------+---------+
+|0 |  timestamp       | worker ID        | sequence|
++--+------------------+------------------+---------+
+
+To sort Twitter Snowflake IDs, you need to extract the timestamp from each ID and then use it as the basis for sorting. The timestamp is stored in the first 41 bits of the ID.
+
+Here's a step-by-step guide to sorting Twitter Snowflake IDs:
+
+Extract the timestamp:
+
+To extract the timestamp from a Snowflake ID, shift the ID to the right by (64 - 41) bits, which means shifting right by 23 bits. This will leave you with the first 41 bits that represent the timestamp.
+Convert the timestamp to milliseconds:
+
+The extracted timestamp represents the number of milliseconds since a custom epoch (Twitter's epoch for Snowflake is 1288834974657, which is "Thu, 04 Nov 2010 01:42:54 GMT"). Add the timestamp value to this epoch time to get the actual timestamp in milliseconds.
+Sort the IDs based on the extracted timestamps:
+
+Compare the timestamps obtained from each Snowflake ID and sort the IDs based on the chronological order of their associated timestamps.
+
+def extract_timestamp(snowflake_id):
+    # Twitter's custom epoch for Snowflake
+    epoch = 1288834974657
+    # Extract the timestamp (first 41 bits)
+    timestamp = (snowflake_id >> 23) + epoch
+    return timestamp
+
+def sort_snowflake_ids(snowflake_ids):
+    # Sort the IDs based on their timestamps
+    sorted_ids = sorted(snowflake_ids, key=extract_timestamp)
+    return sorted_ids
+
+# Example usage:
+snowflake_ids = [123456789012345678, 987654321098765432, 456789012345678901]
+sorted_ids = sort_snowflake_ids(snowflake_ids)
+print(sorted_ids)
+
