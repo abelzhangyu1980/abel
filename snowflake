@@ -1,0 +1,15 @@
+Snowflakes are 64 bits in binary. (Only 63 are used to fit in a signed integer.) The first 41 bits are a timestamp, representing milliseconds since the chosen epoch. 
+The next 10 bits represent a machine ID, preventing clashes. 
+Twelve more bits represent a per-machine sequence number, to allow creation of multiple snowflakes in the same millisecond. The final number is generally serialized in decimal.
+
+Snowflakes are sortable by time, because they are based on the time they were created.[1] Additionally, the time a snowflake was created can be calculated from the snowflake. 
+This can be used to get snowflakes (and their associated objects) that were created before or after a particular date.[2]
+
+
+
+Example
+A tweet produced by @Wikipedia in June 2022[3] has the snowflake ID 1541815603606036480. The number may be converted to binary as 00 0001 0101 0110 0101 1010 0001 0001 1111 0110 0010 00|01 0111 1010|0000 0000 0000, with pipe symbols denoting the three parts of the ID.
+
+The first 41 (+ 1 top zero bit) bits convert to decimal as 367597485448. Add the value to the Twitter Epoch of 1288834974657 (in Unix time milliseconds),[4] the Unix time of the tweet is therefore 1656432460.105: June 28, 2022 16:07:40.105 UTC.
+The middle 10 bits 01 0111 1010 are the machine ID.
+The last 12 bits decode to all zero, meaning this tweet is the first tweet processed by the machine at the given millisecond.
