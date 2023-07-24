@@ -1,0 +1,16 @@
+ZooKeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.
+
+很多分布式协调服务都可以用 ZooKeeper 来做，其中典型应用场景如下：
+
+配置管理（configuration management）：如果我们做普通的 Java 应用，一般配置项就是一个本地的配置文件，如果是微服务系统，各个独立服务都要使用集中化的配置管理，这个时候就需要 ZooKeeper。
+DNS 服务
+组成员管理（group membership）：比如上面讲到的 HBase 其实就是用来做集群的组成员管理。
+各种分布式锁
+
+ZooKeeper 的数据模型是层次模型。层次模型常见于文件系统。层次模型和 key-value 模型是两种主流的数据模型。ZooKeeper 使用文件系统模型主要基于以下两点考虑：
+
+文件系统的树形结构便于表达数据之间的层次关系。
+文件系统的树形结构便于为不同的应用分配独立的命名空间（namespace）。
+ZooKeeper 的层次模型称作 data tree。Data tree 的每个节点叫做 znode。不同于文件系统，每个节点都可以保存数据。每个节点都有一个版本(version)，版本从 0 开始计数。
+
+![Alt text](zk1.png?raw=true "Title")
