@@ -50,3 +50,11 @@ snowflake_ids = [123456789012345678, 987654321098765432, 456789012345678901]
 sorted_ids = sort_snowflake_ids(snowflake_ids)
 print(sorted_ids)
 
+Advantages & Disadvantages of the Twitter Snowflake Approach
+It is 64-bit long, it is half the size of UUIDs
+Scalable (it can accommodate 1024 machines)
+Highly available (Each machine can generate 4096 unique IDs each millisecond)
+Some of the UUID versions do not include a timestamp. In this case, Twitter Snowflake has a sortable advantage.
+Design requires Zookeeper (disadvantage)
+The generated IDs are not random like UUIDs. Future IDs can predictable.
+The maximum timestamp that can be represented in 41 bits is (~ 69 years). Need a solution after this :)
