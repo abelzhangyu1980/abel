@@ -35,5 +35,47 @@ ZooKeeper 的层次模型称作 data tree。Data tree 的每个节点叫做 znod
 
 定义锁:
 
-/shared_lock/[hostname]-请求类型W/R-序号
+/shared_lock/[hostname]-请求类型W/R-序号、
+
+分布式锁的实现方式主要以(ZooKeeper、Reids、Mysql)这三种为主
+
+临时顺序节点
+基于ZooKeeper的临时顺序节点 ，ZooKeeper比较适合来实现分布式锁：
+
+顺序发号器： ZooKeeper的每一个节点，都是自带顺序生成器：在每个节点下面创建临时节点，新的子节点后面，会添加一个次序编号，这个生成的编号，会在上一次的编号进行 +1 操作
+有序递增： ZooKeeper节点有序递增，可以保证锁的公平性，我们只需要在一个持久父节点下，创建对应的临时顺序节点，每个线程在尝试占用锁之前，会调用watch，判断自己当前的序号是不是在当前父节点最小，如果是，那么获取锁
+Znode监听： 每个线程在抢占所之前，会创建属于当前线程的ZNode节点，在释放锁的时候，会删除创建的ZNode，当我们创建的序号不是最小的时候，会等待watch通知，也就是上一个ZNode的状态通知，当前一个ZNode删除的时候，会触发回调机制，告诉下一个ZNode，你可以获取锁开始工作了
+临时节点自动删除： ZooKeeper还有一个好处，当我们客户端断开连接之后，我们出创建的临时节点会进行自动删除操作，所以我们在使用分布式锁的时候，一般都是会去创建临时节点，这样可以避免因为网络异常等原因，造成的死锁。
+羊群效应： ZooKeeper节点的顺序访问性，后面监听前面的方式，可以有效的避免 羊群效应，什么是羊群效应：当某一个节点挂掉了，所有的节点都要去监听，然后做出回应，这样会给服务器带来比较大压力，如果有了临时顺序节点，当一个节点挂掉了，只有它后面的那一个节点才做出反应。
+
+
+业界流行的分布式锁实现，一般有这3种方式：
+
+基于数据库实现的分布式锁。
+基于Redis实现的分布式锁。
+基于Zookeeper实现的分布式锁。
+
+基于数据库实现分布式锁基于数据库表（锁表，很少使用）乐观锁(基于版本号)悲观锁(基于排它锁)基于 redis 实现分布式锁: 单个Redis实例：setnx(key,当前时间+过期时间) + LuaRedis集群模式：Redlock基于 zookeeper实现分布式锁临时有序节点来实现的分布式锁,Curator
+ //0.开始事务
+begin;/begin work;/start transaction; (三者选一就可以)
+//1.查询出商品信息
+select status from t_goods where id=1 for update;
+//2.根据商品信息生成订单
+insert into t_orders (id,goods_id) values (null,1);
+//3.修改商品status为2
+update t_goods set status=2;
+//4.提交事务
+commit;/commit work;
+------
+ 
+--基于乐观锁
+1.查询出商品信息
+select (status,status,version) from t_goods where id=#{id}
+2.根据商品信息生成订单
+3.修改商品status为2
+update t_goods 
+set status=2,version=version+1
+where id=#{id} and version=#{version};
+------
+ 
 
