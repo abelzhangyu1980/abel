@@ -1,0 +1,95 @@
+Root Certificate. A root certificate is a digital certificate that belongs to the issuing Certificate Authority. It comes pre-downloaded in most browsers and is stored in what is called a “trust store.” The root certificates are closely guarded by CAs.
+Intermediate Certificate. Intermediate certificates branch off root certificates like branches of trees. They act as middle-men between the protected root certificates and the server certificates issued out to the public. There will always be at least one intermediate certificate in a chain, but there can be more than one.
+Server Certificate. The server certificate is the one issued to the specific domain the user is needing coverage for.
+
+On a Windows OS, if you are looking at the certificate store, you would see all the Root CA certificates in the Trusted Root Certification Authorities. 
+This by default includes the list of public root CA’s which are installed with Windows and are updated periodically through Windows Updates.
+
+The root CA signs the intermediate root with its private key, which makes it trusted. Then the CA uses the intermediate certificate’s private key to sign and issue end user SSL certificates. This process can be repeated several times, where an intermediate root signs another intermediate and finally to sign an end entity certificate.
+These links, from root to intermediate to end entity, are the certificate chain.
+
+We can differentiate a root certificate from an intermediate one by looking at the certificate itself. If the Issued to and Issued by fields are same then it is a root certificate, otherwise it is an intermediate. Another identification would be to look at the Certification Path. \
+The certification which appears at the top of the list is the root certificate. 
+
+Browsers verify 2 factors before trusting a certificate.
+
+They check whether the certificate is signed with the root’s private key or not. 
+They also verify all the certificates in the hierarchy, i.e., server, intermediate, and root.
+
+Root Certificate
+The house of this digital certificate is the “trust store”, and hence it resides there. Since its ownership lies with the issuing CA, they keep a sharp watch on these certificates.
+
+Intermediate Certificate
+These certificates are mediators between the secured root certificates and the server (endpoint) certificates. It is compulsory to have a single intermediate certificate in the chain, though there can be multiple ones too. 
+
+Server Certificate (SSL Certificate)
+This certificate is issued against the domain name for which the user-generated the CSR. It secures the root domain and, in many cases, sub-domains too. 
+
+The signatures of all these certificates are verified, with the public key lying in the certificate to ensure its genuineness. When the last server certificate is positively verified, it’s proof that the SSL certificate is authentic and trustworthy. 
+
+If certificate chains are incomplete, i.e., have a missing certificate, the browsers tend to display an error. 
+
+When validating a server certificate in Java, both intermediate certificates and the root certificate are validated as part of the certificate chain validation process. The server certificate is typically issued by an intermediate certificate authority (CA) rather than the root CA directly.
+
+The certificate chain validation ensures that each certificate in the chain is valid and trusted. The process involves the following steps:
+
+Certificate Parsing: The server certificate, along with any intermediate certificates provided by the server, is parsed to extract important information such as the public key, expiration date, and issuer's information.
+
+Certificate Chain Building: Java will attempt to build the certificate chain by linking the server certificate to the appropriate intermediate certificate and, if necessary, further linking the intermediate certificate to the root certificate. This is important because it establishes a chain of trust from the root CA down to the server certificate.
+
+Certificate Revocation Checks: The certificate revocation status is checked to ensure that the certificate has not been revoked before its expiration date. This is usually done by checking Certificate Revocation Lists (CRLs) or using Online Certificate Status Protocol (OCSP) checks.
+
+Certificate Trust Verification: Each certificate in the chain is verified to be signed by the issuer specified in the "Issuer" field of the subsequent certificate. This process is recursively applied until the trust chain reaches a root certificate.
+
+Root Certificate Validation: The root certificate is checked against the list of trusted root certificates in the Java keystore. If the root certificate is trusted, the certificate chain is considered valid and trusted.
+
+If any step in this process fails, the certificate chain is considered invalid, and the SSL/TLS handshake will not proceed. To ensure successful certificate validation, make sure your Java installation has up-to-date trusted root certificates and a properly configured keystore.
+
+In summary, both intermediate certificates and the root certificate are crucial for the successful validation of a server certificate in Java.
+
+When we establish a connection over HTTPS, the web server will respond by providing its site and intermediate certificates. It is then up to the client to complete the chain by having the root certificate. This chain validation is necessary for the client to trust the site.
+
+Certificate Chain
+Digital certificates are verified using a chain of trust. The trust anchor for digital certificate is the root Certificate Authority (CA). Web browsers are preconfigured with a set of root CA certificates that the browser automatically trusts. Any certificate from elsewhere must come with a certificate chain to verify its validity.
+
+A certificate chain is a sequence of certificates, where each certificate in the chain is signed by the subsequent certificate, eventually resulting in a tree structure. A certificate chain thus traces the path of a certificate from a branch to the root in the hierarchy. The root certificate is a self-signed, topmost certificate of the tree and is generated first. A self-signed certificate is one for which the issuer (signer) is the same as the subject (the entity whose public key is being authenticated by the certificate). The certificates that are directly subordinate to the root certificate have CA certificates that are signed by the root certificate. All certificates below the root certificate thus inherit the trustworthiness of the root certificate.
+
+A certificate chain has the following components:
+
+A root CA certificate
+
+One or more intermediate certificates
+
+Client/server certificate signed by the intermediate CA certificate
+
+In a certificate chain:
+
+Each certificate is followed by the certificate of its issuer. The certificate contains the distinguished name of the certificate's issuer and is same as the subject name of the next certificate in the certificate chain.
+
+Each certificate is signed with a private key of its issuer. The signature can be verified with the public key in the issuer's certificate, which is the next certificate in the certificate chain.
+
+Verifying a certificate chain is a process of ensuring that a specific chain is valid, correctly signed, and trustworthy. The purpose of certificate chain is to establish a chain of trust from a subordinate certificate to a trusted root CA certificate. The root CA certificate vouches for the identity in the branch certificate by signing it. If the root CA is the one you trust, it implies that you can trust the certificate of its branches.
+
+During a certificate chain verification, the authentication will fail when:
+
+The root CA is not trusted
+
+An invalid signature is found
+
+The certificate validity dates are expired
+
+Certificate chain verification is the process of making sure a given certificate chain is well-formed, valid, properly signed, and trustworthy. Directory Server software uses the following steps to form and verify a certificate chain, starting with the certificate being presented for authentication:
+
+The certificate validity period is checked against the current time provided by the verifier’s system clock.
+
+The issuer’s certificate is located. The source can be either the verifier’s local certificate database (on that client or server) or the certificate chain provided by the subject (for example, over an SSL connection).
+
+The certificate signature is verified using the public key in the issuer certificate.
+
+If the issuer’s certificate is trusted by the verifier in the verifier’s certificate database, verification stops successfully here. Otherwise, the issuer’s certificate is checked to make sure it contains the appropriate subordinate CA indication in the Directory Server certificate type extension, and chain verification returns to step 1 to start again, but with this new certificate.
+
+in summary:
+如果server证书已经在trust store里面，validation不会继续检查上游证书。
+如果中间证书不在trust store里面，继续检查直到root证书。任何一个在trust store里面都OK。
+
+所以我们其实可以只是import root certificate，不需要import server或者intermediate certifcate。
