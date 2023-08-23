@@ -1,0 +1,195 @@
+https://localhost:9200/_security/api_key?id=ljBtG4oB9I188UFSCYaf
+
+1. list all api keys:
+https://localhost:9200/_security/api_key?name=*
+
+{"api_keys":[{"id":"ljBtG4oB9I188UFSCYaf","name":"enrollment_token_API_key_lTBtG4oB9I188UFSCYaS","creation":1692677245347,"expiration":1692679045347,"invalidated":false,"username":"_xpack_security","realm":"__attach","metadata":{},"role_descriptors":{"create_enrollment_token":{"cluster":["cluster:admin/xpack/security/enroll/kibana"],"indices":[],"applications":[],"run_as":[],"metadata":{},"transient_metadata":{"enabled":true}}}}]}
+
+workItem {
+
+    
+}
+in poatman, set basic authentication and content type to application/json
+
+PUT /workitem?pretty
+{
+    "settings" : {
+        "number_of_shards" : 2,
+        "number_of_replicas" : 1
+    },
+    "mappings" : {
+        "properties" : {
+            "barcode" : { "type" : "keyword" },
+            "primaryBarcode" : { "type" : "keyword" },
+            "status" : { "type" : "keyword" },
+            "docs": {"type" : "keyword" },
+            "linkedBarcodes" :  { "type" : "keyword" },
+            "rowId" : {"type": "integer"},
+            "referenceNo": {"type": "integer"},
+            "timestamp" : {"type" : "date" },
+            "investor" :  { "type" : "keyword" },
+            "agent" :  { "type" : "keyword" },
+            "businessLine" :  { "type" : "keyword" },
+            "productType" :  { "type" : "keyword" },
+            "workType" :  { "type" : "keyword" },
+            "subType" :  { "type" : "keyword" },
+            "trust" :  { "type" : "keyword" },
+            "effectiveDate" :  { "type" : "date" },
+            "dueDate" :  { "type" : "date" },
+            "slaDate" :  { "type" : "date" },
+            "pilotDate" :  { "type" : "date" },
+            "employer" :  { "type" : "keyword" },
+            "badge" :  { "type" : "keyword" },
+            "primaryAccount" :  { "type" : "keyword" }
+        }
+    }
+}
+
+------response-----------
+{
+    "acknowledged": true,
+    "shards_acknowledged": true,
+    "index": "workitem"
+}
+
+get https://localhost:9200/workitem
+{
+  "workitem": {
+    "aliases": {},
+    "mappings": {
+      "properties": {
+        "agent": {
+          "type": "keyword"
+        },
+        "badge": {
+          "type": "keyword"
+        },
+        "barcode": {
+          "type": "keyword"
+        },
+        "businessLine": {
+          "type": "keyword"
+        },
+        "docs": {
+          "type": "keyword"
+        },
+        "dueDate": {
+          "type": "date"
+        },
+        "effectiveDate": {
+          "type": "date"
+        },
+        "employer": {
+          "type": "keyword"
+        },
+        "investor": {
+          "type": "keyword"
+        },
+        "linkedBarcodes": {
+          "type": "keyword"
+        },
+        "pilotDate": {
+          "type": "date"
+        },
+        "primaryAccount": {
+          "type": "keyword"
+        },
+        "primaryBarcode": {
+          "type": "keyword"
+        },
+        "productType": {
+          "type": "keyword"
+        },
+        "referenceNo": {
+          "type": "integer"
+        },
+        "rowId": {
+          "type": "integer"
+        },
+        "slaDate": {
+          "type": "date"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "subType": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date"
+        },
+        "trust": {
+          "type": "keyword"
+        },
+        "workType": {
+          "type": "keyword"
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "routing": {
+          "allocation": {
+            "include": {
+              "_tier_preference": "data_content"
+            }
+          }
+        },
+        "number_of_shards": "2",
+        "provided_name": "workitem",
+        "creation_date": "1692682477185",
+        "number_of_replicas": "1",
+        "uuid": "EVKqRKexTGazaCZClSaplA",
+        "version": {
+          "created": "8090199"
+        }
+      }
+    }
+  }
+}
+
+
+Indexing documents with an auto generated id is more efficient than using a custom id so is ideal for immutable data. 
+If you want to update data you may benefit from a custom id as updating gets easier and you do not need to search for the id first.1 May 2021
+
+use ?op_type=create to avoid overwriting existing doc... if response is an error code, then we can see the doc is shared... upload it to shareddoc index...
+
+POST workitem/_doc/700002838S 
+{
+  "@timestamp": "2022-11-15T13:12:00",
+   "barcode": "700002838S",
+   "primaryBarcode":  "700002838S",
+   "docs": [12345,23456,34567 ],
+   "investor":"DH28107",
+   "businessLine":"BenTest",
+   "productType":"TestB",
+   "workType":"TestW22222",
+   "subType":"TestSub",
+   "trust":"T123"
+}
+
+--response:
+{
+    "_index": "workitem",
+    "_id": "700002838S",
+    "_version": 1,
+    "result": "created",
+    "_shards": {
+        "total": 2,
+        "successful": 1,
+        "failed": 0
+    },
+    "_seq_no": 0,
+    "_primary_term": 1
+}
+
+--query
+POST workitem/_search?pretty&filter_path=hits.hits._source
+{
+  "query": {
+    "terms": {
+      "docs": [12345]
+    }
+  }
+}
+
