@@ -22,7 +22,7 @@ PUT /workitem?pretty
             "barcode" : { "type" : "keyword" },
             "primaryBarcode" : { "type" : "keyword" },
             "status" : { "type" : "keyword" },
-            "docs": {"type" : "keyword" },
+            "docs": {"type" : "integer" },
             "linkedBarcodes" :  { "type" : "keyword" },
             "rowId" : {"type": "integer"},
             "referenceNo": {"type": "integer"},
@@ -67,16 +67,16 @@ get https://localhost:9200/workitem
         "barcode": {
           "type": "keyword"
         },
-        "businessLine": {
+        "businessline": {
           "type": "keyword"
         },
         "docs": {
           "type": "keyword"
         },
-        "dueDate": {
+        "duedate": {
           "type": "date"
         },
-        "effectiveDate": {
+        "effectivedate": {
           "type": "date"
         },
         "employer": {
@@ -85,34 +85,34 @@ get https://localhost:9200/workitem
         "investor": {
           "type": "keyword"
         },
-        "linkedBarcodes": {
+        "linkedbarcodes": {
           "type": "keyword"
         },
-        "pilotDate": {
+        "pilotdate": {
           "type": "date"
         },
-        "primaryAccount": {
+        "primaryaccount": {
           "type": "keyword"
         },
-        "primaryBarcode": {
+        "primarybarcode": {
           "type": "keyword"
         },
-        "productType": {
+        "producttype": {
           "type": "keyword"
         },
-        "referenceNo": {
+        "referenceno": {
           "type": "integer"
         },
-        "rowId": {
+        "rowid": {
           "type": "integer"
         },
-        "slaDate": {
+        "sladate": {
           "type": "date"
         },
         "status": {
           "type": "keyword"
         },
-        "subType": {
+        "subtype": {
           "type": "keyword"
         },
         "timestamp": {
@@ -121,7 +121,7 @@ get https://localhost:9200/workitem
         "trust": {
           "type": "keyword"
         },
-        "workType": {
+        "worktype": {
           "type": "keyword"
         }
       }
@@ -158,13 +158,13 @@ POST workitem/_doc/700002838S
 {
   "@timestamp": "2022-11-15T13:12:00",
    "barcode": "700002838S",
-   "primaryBarcode":  "700002838S",
+   "primarybarcode":  "700002838S",
    "docs": [12345,23456,34567 ],
    "investor":"DH28107",
-   "businessLine":"BenTest",
-   "productType":"TestB",
-   "workType":"TestW22222",
-   "subType":"TestSub",
+   "businessline":"BenTest",
+   "producttype":"TestB",
+   "worktype":"TestW22222",
+   "subtype":"TestSub",
    "trust":"T123"
 }
 
@@ -191,5 +191,24 @@ POST workitem/_search?pretty&filter_path=hits.hits._source
       "docs": [12345]
     }
   }
+}
+
+
+
+https://localhost:9200/basildoc?pretty
+{
+    "settings" : {
+        "number_of_shards" : 2,
+        "number_of_replicas" : 1
+    },
+    "mappings" : {
+        "properties" : {
+            "docid" : { "type" : "integer" },
+            "doctype" : {"type" : "keyword"},
+            "doccreated" : {"type" : "date"},
+            "docstatus" : {"type" : "keyword"},
+            "barcode" : {"type" : "keyword"}
+        }
+    }
 }
 
