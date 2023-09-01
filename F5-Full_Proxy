@@ -1,0 +1,10 @@
+The F5 BIG-IP has a reputation of the one of the best Load Balancer solution in the market, to performs an intelligence load balancing to the backend servers, it operates as Full Proxy, what does it mean?, full proxy technically is the possibility for the BIG-IP to split a TCP connection into two TCP connection.
+In the Client-side connection, the user initiates a TCP 3 way handshake with the BIG-IP (it acts as a server) and the BIG-IP (it acts as a client) initiates a TCP 3 way handshake with the backend servers. this is what what we call "Full Proxy", this is the opposite to the Packet based solution which is similar to our Router/Firewall. Packet based designs have a single TCP/IP connection between client and server. The Router basically forwards the packet based on the Destination IP of the server. In other words there is a direct connection between the client and the server.
+In the BIG-IP language, the concept of Virtual Server Type Standard is the object that performs the Full Proxy process.
+But what if we have a need of Packet Based solution with a BIG-IP in our design?
+
+For direct communications between PAN/MnT and PSNs, the virtual server Type Standard is not the solution, as mentioned previously this type of virtual server is used for load balancing to the backend servers.
+Here comes the Virtual Server Type "Forwarding IP" for help, the idea for this Type of virtual server is to perfoms the Packet Based for the BIG-IP, in other words, for some traffic, you play a role of router, you have to route the packet based on the destination IP.
+Finally there are two key points in this design:
+1-The BIG-IP plays a role of Full Proxy to load balance the Radius Packet (802.1X based authentication) to the PSNs. This is done by using a Virtual Server called "Standard".
+2-The BIG-IP plays a role of router to route and to forward the packet coming from PAN/MnT to PSN and vice versa.This is done by using a Virtual Server Called "Forwarding IP"
