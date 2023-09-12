@@ -212,3 +212,63 @@ https://localhost:9200/basildoc?pretty
     }
 }
 
+
+
+https://www.jsonformatter.io/
+
+
+{
+   "_source": [
+      "wfBarcodes"
+   ],
+   "query": {
+      "bool": {
+         "must": [
+            {
+               "range": {
+                  "sharedTimes": {
+                     "gt": 1
+                  }
+               }
+            },
+            {
+               "bool": {
+                  "should": []
+               }
+            }
+         ]
+      }
+   }
+}
+
+{
+   "query": {
+      "bool": {
+         "must": [
+            {
+               "range": {
+                  "sharedTimes": {
+                     "gt": 1
+                  }
+               }
+            },
+            {
+               "bool": {
+                  "should": [
+                     {
+                        "term": {
+                           "docId": 1608714185
+                        }
+                     },
+                     {
+                        "term": {
+                           "docId": 1610336245
+                        }
+                     }
+                  ]
+               }
+            }
+         ]
+      }
+   }
+}
