@@ -272,3 +272,19 @@ https://www.jsonformatter.io/
       }
    }
 }
+
+
+
+---group by shared times which can tell us how docs are shared... sharedTime>1
+https://localhost:9200/basildoc/_search?size=0
+{
+  "aggs": {
+    "count_by_field": {
+      "terms": {
+        "field": "sharedTimes",
+        "size": 100
+      }
+    }
+  }
+}
+ 
