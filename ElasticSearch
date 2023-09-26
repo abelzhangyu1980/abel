@@ -288,3 +288,17 @@ https://localhost:9200/basildoc/_search?size=0
   }
 }
  
+
+
+C:\Users\m043075\OneDrive - Westpac Group\_MyHome\work\Elasticsearch\26092923\indices
+
+http://localhost:9200/_snapshot/my_fs_backup
+
+{
+  "type": "fs",
+  "settings": {
+    "location": "26092923"        
+  }
+}
+
+PUT _snapshot/my_fs_backup/my_snapshot?wait_for_completion=true
