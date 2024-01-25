@@ -26,3 +26,15 @@ Records can be located in the smallest possible number of steps.
 - Update efficiency
 
 Record updates are performed in a way that minimizes the number of changes on disk.
+
+
+### Data Files
+
+Data files (sometimes called primary files) can be implemented as indexorganized tables (IOT), heap-organized tables (heap files), or hashorganized tables (hashed files).
+
+- Records in heap files are not required to follow any particular order, and most of the time they are placed in a write order. This way, no additional work or file reorganization is required when new pages are appended. Heap files require additional index structures, pointing to the locations where data records are stored, to make them searchable.
+- In hashed files, records are stored in buckets, and the hash value of the key determines which bucket a record belongs to. Records in the bucket can be stored in append order or sorted by key to improve lookup speed.
+- Index-organized tables (IOTs) store data records in the index itself. Since records are stored in key order, range scans in IOTs can be implemented by sequentially scanning its contents. Storing data records in the index allows us to reduce the number of disk seeks by at least one, since after traversing the index and locating the searched key, we do not have to address a separate file to find the associated data record.
+
+### Index Files
+An index is a structure that organizes data records on disk in a way that facilitates efficient retrieval operations. Index files are organized as specialized structures that map keys to locations in data files where the records identified by these keys (in the case of heap files) or primary keys (in the case of index-organized tables) are stored.
