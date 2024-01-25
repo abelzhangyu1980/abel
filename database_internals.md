@@ -62,6 +62,14 @@ maintain histories of their operations, and check these histories for possible c
 - Pessimistic (also known as conservative) concurrency control (PCC)
     There are both lock-based and nonlocking conservative methods, which differ in how they manage and grant access to shared resources. Lock-based approaches require transactions to maintain locks on database records to prevent other transactions from modifying locked records and assessing records that are being modified until the transaction releases its locks. Nonlocking approaches maintain read and write operation lists and restrict execution, depending on the schedule of unfinished transactions.
 
-  
+- read uncommitted
+  allow dirty, non-repeatable and phantom read
+- read committed
+  allow non-repeatable and phantom read
+- repeatable read
+  allow phantom read
+- serializable
+
+
 
 
