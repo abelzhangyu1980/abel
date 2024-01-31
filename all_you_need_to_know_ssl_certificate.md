@@ -123,5 +123,12 @@ The verification data is built from a hash of all handshake messages and verifie
 
 The client sends an alert that it is closing the connection.
 
+# The TLS 1.3 handshake
+1. Server listens for new connections on port 443.
+2. Client connects to port 443 and initiates the handshake process with a ClientHello message to the server. Since the list of cipher suites was vastly reduced in TLS 1.3 (from 37 to 5), the client assumes the server is going to use one of the five. It proactively calculates a key pair for each of the cipher suites and sends it to the server along with the protocol version.
+3. Server calculates the key session. With the client’s key share, the server is able to generate the session key.
+4. Server says “hello” back with a ServerHello message. The server generates its own key share and sends it over to the client, so it also can generate the session key, along with the server’s encrypted SSL certificate (using the session key created on #3).
+5. Client generates master secret and a secure connection is established. The client receives the server’s key share and calculates the session key. It decrypts and verifies the server’s certificates, and if everything is good, the handshake is complete.
+
 
 
