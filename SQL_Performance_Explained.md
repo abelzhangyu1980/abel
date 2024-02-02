@@ -129,6 +129,8 @@ There is, however, one thing that is common to all join algorithms: they process
 ![nested join](nestedjoin.jpg)
 ![merge join](mergejoin.jpg)
 ![hash join](hashjoin.jpg)
+ ![merge join](joinsample.jpg)
+
 
 ## Nested Loops
 The nested loops join is the most fundamental join algorithm. It works like using two nested queries: the outer or driving query to fetch the results from one table and a second query for each row from the driving query to fetch the corresponding data from the other table.
@@ -154,6 +156,22 @@ SELECT C.CustomerID, c.TerritoryID
  ## Merge Join
  The Merge Join operator is one of four operators that join data from two input streams into a single combined output stream. As such, it has two inputs, called the left and right input. In a graphical execution plan, the left input is displayed on the top. Merge Join is the most effective of all join operators. However, it requires all input data to be sorted by the join columns. Often this means that a Merge Join can’t be used without adding extra Sort operators. 
  ![merge join](merge.jpg)
+
+ ### inner join
+ “Handle unmatched left row” and “Handle unmatched right row” do nothing for the inner join operation
+ 
+ ### Left Outer Join
+ The left outer join operation returns the same combined data from “Handle matching rows” as an inner join. However, “Handle unmatched left row” now also returns data, from the left input and with null values for the columns from the right input. “Handle unmatched right row” does nothing.
+
+### Right Outer Join
+The right outer join operation returns the same combined data from “Handle matching rows” as an inner join. However, “Handle unmatched right row” now also returns data, from the right input and with null values for the columns from the left input. “Handle unmatched left row” does nothing; its associated logic has no effect and may or may not be skipped during processing.
+
+ ### Full Outer Join
+ The full outer join operation returns the same combined data from “Handle matching rows” as an inner join. However, both “Handle unmatched left row” and “Handle unmatched right row” now also return data, from the unmatched input and with null values for the columns from the other input.
+
+ ### Left Semi Join
+ The left semi join operation returns data from “Handle matching rows”, but only when the left row was not yet marked as matched. If it is already marked as matched, then this is a second or later match for the same left row, and returning it again would cause a duplicate. The data returned will be from the left input only.
+ 
 
 ## Hash Join
 The hash join algorithm aims for the weak spot of the nested loops join: the many B-tree traversals when executing the inner query. Instead it loads the candidate records from one side of the join into a hash table that can be probed very quickly for each row from the other side of the join. Tuning a hash join requires an entirely different indexing approach than the nested loops join. Beyond that, it is also possible to improve hash join performance by selecting fewer columns — a challenge for most ORM tools.
@@ -238,6 +256,8 @@ Predicate Information (identified by operation id):
 The index covers the entire query so it is also called a covering index.
 
 The index has a copy of the EUR_VALUE column so the database can use the value stored in the index. Accessing the table is not required because the index has all of the information to satisfy the query.
+
+Table Scans only occur against heap tables, tables without clustered indexes. With a clustered index,  we'd get a Clustered Index Scan, which is the equivalent of a Table Scan operation
 
 
 
