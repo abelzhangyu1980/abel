@@ -33,6 +33,9 @@ Clustered indexes are implemented in the following ways:
 - Index independent of a constraint
    You can create a clustered index on a column other than primary key column if a nonclustered primary key constraint was specified.
 
+## index seek vs index scan
+When specific data is returned from data page, in this fashion, it is referred to as an index seek. The alternative is an index scan, whereby SQL Server scans all of the leaf level pages in order to locate the required data. As you can imagine, index seeks are almost always much more efficient than index scans.
+
 # The Where Clause
 The where clause defines the search condition of an SQL statement, and it thus falls into the core functional domain of an index: finding data quickly.
 
@@ -122,6 +125,10 @@ CREATE INDEX messages_todo ON messages (receiver) WHERE processed = 'N'
 
 # The Join Operation
 There is, however, one thing that is common to all join algorithms: they process only two tables at a time. A SQL query with more tables requires multiple steps: first building an intermediate result set by joining two tables, then joining the result with the next table and so forth.
+
+![nested join](nestedjoin.jpg)
+![merge join](mergejoin.jpg)
+![hash join](hashjoin.jpg)
 
 ## Nested Loops
 The nested loops join is the most fundamental join algorithm. It works like using two nested queries: the outer or driving query to fetch the results from one table and a second query for each row from the driving query to fetch the corresponding data from the other table.
