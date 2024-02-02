@@ -18,6 +18,21 @@ Logarithmic Scalability
 - INDEX RANGE SCAN The INDEX RANGE SCAN performs the tree traversal and follows the leaf node chain to find all matching entries This is the fallback operation if multiple entries could possibly match the search criteria.
 - TABLE ACCESS BY INDEX ROWID The TABLE ACCESS BY INDEX ROWID operation retrieves the row from the table. This operation is (often) performed for every matched record from a preceding index scan operation
 
+## Clustered index
+Clustered indexes sort and store the data rows in the table or view based on their key values. These key values are the columns included in the index definition. There can be only one clustered index per table, because the data rows themselves can be stored in only one order.
+A clustered index is an index where the leaf level of the index contains the actual data rows of the table. Like any other index, a clustered index is defined on one or more columns – the index key. The key columns for a clustered index are often referred to as the clustering key.
+The clustered index can be looked at as a balanced tree (b-tree) structure built on top of a table, with the rows in the table stored logically in the order of the clustering key (see figure 1). The clustered index essentially is the table and hence there cannot be more than one on a table.
+![clustered index](clusteredindex.jpg)
+Clustered indexes are implemented in the following ways:
+- PRIMARY KEY and UNIQUE constraints
+  When you create a PRIMARY KEY constraint, a unique clustered index on the column or columns is automatically created if a clustered index on the table doesn't already exist and you don't specify a unique nonclustered index. The primary key column can't allow NULL values.
+   When you create a UNIQUE constraint, a unique nonclustered index is created to enforce a UNIQUE constraint by default. You can specify a unique clustered index if a clustered index on the table doesn't already exist.
+
+   An index created as part of the constraint is automatically given the same name as the constraint name. For more information, see Primary and Foreign Key Constraints and Unique constraints and check constraints.
+
+- Index independent of a constraint
+   You can create a clustered index on a column other than primary key column if a nonclustered primary key constraint was specified.
+
 # The Where Clause
 The where clause defines the search condition of an SQL statement, and it thus falls into the core functional domain of an index: finding data quickly.
 
