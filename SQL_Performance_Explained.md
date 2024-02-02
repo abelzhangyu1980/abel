@@ -132,6 +132,28 @@ There is, however, one thing that is common to all join algorithms: they process
 
 ## Nested Loops
 The nested loops join is the most fundamental join algorithm. It works like using two nested queries: the outer or driving query to fetch the results from one table and a second query for each row from the driving query to fetch the corresponding data from the other table.
+for each row R1 in outer table
+    begin
+        for each row R2 in innner table
+           if R1 joins R2
+              return (R1,R2)
+    end
+
+cost of nested loops is proportional to the product of rows in outer and inner tables. if outer has M rows and inner has N rows, it will take M*N iterations O(n^2)
+
+The nested loop join, also called nested iteration, uses one join input as the outer input table (shown as the top input in the graphical execution plan; see Figure 1 below) and the other input as the inner input table. The outer loop consumes the outer input table row by row. The inner loop, executed for each outer row, searches for matching rows in the inner input table. The listing below is an example that produces a nested loop join.
+--Nested Loop Join
+  
+SELECT C.CustomerID, c.TerritoryID
+ FROM **Sales.SalesOrderHeader oh**
+ JOIN** Sales.Customer c**
+   ON c.CustomerID = oh.CustomerID
+ WHERE c.CustomerID IN (10,12)
+ GROUP BY C.CustomerID, c.TerritoryID
+
+ ## Merge Join
+ The Merge Join operator is one of four operators that join data from two input streams into a single combined output stream. As such, it has two inputs, called the left and right input. In a graphical execution plan, the left input is displayed on the top. Merge Join is the most effective of all join operators. However, it requires all input data to be sorted by the join columns. Often this means that a Merge Join can’t be used without adding extra Sort operators. 
+ ![merge join](merge.jpg)
 
 ## Hash Join
 The hash join algorithm aims for the weak spot of the nested loops join: the many B-tree traversals when executing the inner query. Instead it loads the candidate records from one side of the join into a hash table that can be probed very quickly for each row from the other side of the join. Tuning a hash join requires an entirely different indexing approach than the nested loops join. Beyond that, it is also possible to improve hash join performance by selecting fewer columns — a challenge for most ORM tools.
