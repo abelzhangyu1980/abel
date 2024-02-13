@@ -100,3 +100,41 @@ Associated with each operator icon, and displayed below it, is an estimated cost
 - The other Hash Match join operator between the Person.Address table and the output from the Nested Loop operator (20%).
 
  ![table join](/tablejoin.png)
+
+
+# Hash Match join
+
+A Hash Match operator appears in the plan when SQL Server puts two data sets into temporary tables, hash tables, and then uses these structures to compare data and arrive at the matching set.
+Listing 2.7 had two different Hash Match join operations. Reading the plan logically, the first operation after the Select operator is a Hash Match join operation. This join is combining the output of one of the Index Scans with the combined output of the rest of the operations in the query. This Hash Match join operation is the second most expensive operation of this execution plan, so we would be interested in what we could
+do to improve its performance. Figure 2.17 shows the properties for this operator.
+
+ ![table join](/hashmatch.png)
+
+ Before we can talk about what a Hash Match join is, we need to understand two new concepts: hashing and a hash table. Hashing is a programmatic technique where data is converted into a symbolic form that makes searching for that data much more efficient. For example, SQL Server programmatically converts a row of data in a table into a unique value that represents the contents of the row. In many ways, it is like taking a
+row of data and encrypting it. Like encryption, a hashed value can be converted back to the original data.
+A hash table, on the other hand, is a data structure that divides all of the elements into equal-sized categories, or buckets, to allow quick access to the elements. The hashing function determines into which bucket an element goes. For example, SQL Server can take a row from a table, hash it into a hash value, and then store the hash value in a hash table, in tempdb.
+
+Now that we understand these terms, we can discuss the Hash Match join operator. It occurs when SQL Server has to join two large data sets, and decides to do so by first hashing the rows from the smaller of the two data sets, and inserting them into a hash table. It then processes the larger data set, one row at a time, against the hash table, looking for matches, indicating the rows to be joined.
+
+The smaller of the data sets provides the values in the hash table, so the table size is small, and because hashed values instead of real values are used, comparisons are quick. As long as the hash table is relatively small, this can be a quick process. On the other hand, if both tables are very large, a Hash Match join can be very inefficient as compared to other types of joins. All the data for the hash table is stored within tempdb, so excessive use of Hash Joins in your queries can lead to a heavier load on tempdb.
+
+# Nested Loops Join
+
+A Nested Loops join functions by taking a set of data, referred to as the outer set, and comparing it, one row at a time to another set of data, called the inner set. This sounds like a cursor, and effectively, it is one but, with the appropriate data set, it can be a very efficient operation.
+
+# Compute Scalar
+
+This is simply a representation of an operation to produce a scalar, a single defined value, usually from a calculation – in this case, the alias EmployeeName, which combines the columns Contact.LastName and Contact.FirstName with a comma between them. While this was not a zero-cost operation (0.001997), the cost is trivial enough in the context of the query to be essentially free.
+
+# Merge Join
+
+JoinA Merge Join operator works from sorted data, and sorted data only. It takes the data from two different data sets and uses the fact that the data is sorted to simply merge it together, combining based on the matching values, which it can do very easily because the order of the values will be identical. If the data is sorted, this can be one of the most efficient join operations. However, the data is frequently not sorted, so sorting it for a Merge Join requires the addition of a Sort operator to ensure it works; this can make this join operation less efficient.
+
+**SET SHOWPLAN_ALL ON;**
+GO
+SELECT e.BusinessEntityID , e.JobTitle , e.LoginID FROM HumanResources.Employee AS e WHERE e.LoginID = 'adventure-works\marc0';
+GO
+**SET SHOWPLAN_ALL OFF;**
+
+
+
