@@ -38,7 +38,7 @@ A Key Lookup operator (there are two, RID and Key) is required to get data from 
 
 SELECT p.BusinessEntityID, p.LastName, p.FirstName, p.NameStyle FROM Person.Person AS p WHERE p.LastName LIKE 'Jaf%';
 
- ![key lookup](/images/keylookup.jpg)
+ ![key lookup](/keylookup.jpg)
 
  Finally, we get to see a plan that involves more than a single operation! Reading the plan in the physical order from right to left and top to bottom, the first operation we see is an Index Seek against the IX_Person_LastName_FirstName_MiddleName index. This
 is a non-unique, non-clustered index and, in the case of this query, it is non-covering. A covering index is a non-clustered index that contains all of the columns that need to be referenced by a query, including columns in the SELECT list, JOIN criteria and the
@@ -53,14 +53,14 @@ cannot retrieve the rows in a single operation, and has to use a clustered key (
 We can understand the operations of the Key Lookup by using the information contained within the execution plan. If you first open the ToolTips window for the Index Seek operator by hovering with the mouse over that operator, you will see something similar to
 Figure 2.8. The pieces of information in which we're now interested are the Output List and the Seek Predicates, down near the bottom of the window.
 
- ![key lookup](/images/indexseek.png)
+ ![key lookup](/indexseek.png)
 
  Several of the columns are returned from the index, Person.BusinessEntityID, Person.FirstName, and Person.LastName. In addition, you can see how the optimizer can modify a statement. If you look at the Seek Predicates, instead of a LIKE 'Jaf%', as was passed in the query, the optimizer has modified the statement
 so that the actual predicate used is Person.LastName >= 'Jaf' and Person.LastName < 'JaG' (minus a bit of operational code).
 
 A join operation, which combines the results of the two operations, always accompanies a Key Lookup. In this instance, it was a Nested Loops join operation
 
- ![key lookup](/images/nestedloops.png)
+ ![key lookup](/nestedloops.png)
 
 Typically, depending on the amount of data involved, a Nested Loops join by itself does not indicate any performance issues. In this case, because a Key Lookup operation is required, the Nested Loops join is needed to combine the rows of the Index Seek and Key
 Lookup. If the Key Lookup was not needed (because a covering index was available), then the Nested Loops operator would not be needed in this execution plan. However, because this operator was involved, along with the Key Lookup operator, at least two additional
@@ -87,7 +87,7 @@ clustered index on the table, it uses a Key Lookup operator as described above. 
 
 SELECT * FROM [dbo].[DatabaseLog] WHERE DatabaseLogID = 1 
 
- ![key lookup](/images/ridlookup.png)
+ ![key lookup](/ridlookup.png)
 
  # Table Joins
 
