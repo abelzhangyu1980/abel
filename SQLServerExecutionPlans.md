@@ -99,4 +99,4 @@ Associated with each operator icon, and displayed below it, is an estimated cost
 - The Hash Match join operation between the Person.Person table and the output from the first Hash Match (21%).
 - The other Hash Match join operator between the Person.Address table and the output from the Nested Loop operator (20%).
 
-
+ ![key lookup](/tablejoin.jpg)
