@@ -3,16 +3,17 @@ index leap contains data... one clustered index for one table as data can only b
 
 # Index Scan
 
-Indexes in SQL Server are stored in a balanced-tree, or a b-tree (a series of nodes that point to a parent). A clustered index not only stores the key structure, like a regular index, but also sorts and stores the data at the lowest level of the index, known as the leaf,
-which is the reason why there can be only one clustered index per table. This means that a Clustered Index Scan is very similar in concept to a Table Scan. The entire index, or a large percentage of it, is being traversed, row by row, in order to retrieve the data needed
-by the query.
+Indexes in SQL Server are stored in a balanced-tree, or a b-tree (a series of nodes that point to a parent). A clustered index not only stores the key structure, like a regular index, but also sorts and stores the data at the lowest level of the index, known as the leaf, which is the reason why there can be only one clustered index per table. This means that a Clustered Index Scan is very similar in concept to a Table Scan. The entire index, or a large percentage of it, is being traversed, row by row, in order to retrieve the data needed by the query.
 
-An Index Scan often occurs, as in this case, when an index exists but the optimizer determines that there are so many rows to return that it is quicker to simply scan all the values in the index rather than use the keys provided by that index. In other situations, a scan is
-necessary because the index is not selective enough for the optimizer to be sure of finding the values it needs without scanning a large percentage of the index. That can also occur when the statistics for that index are out of date and showing incorrect information. You
-can also have situations where a query applies functions to columns, which means the optimizer can't determine what the value for that column could be so it has to scan the entire index to find it.
+An Index Scan often occurs, as in this case, when an index exists but the optimizer determines that there are so many rows to return that it is quicker to simply scan all the values in the index rather than use the keys provided by that index. In other situations, a scan is necessary because the index is not selective enough for the optimizer to be sure of finding the values it needs without scanning a large percentage of the index. That can also occur when the statistics for that index are out of date and showing incorrect information. You can also have situations where a query applies functions to columns, which means the optimizer can't determine what the value for that column could be so it has to scan the entire index to find it.
 
-An obvious question to ask, if you see an Index Scan in your execution plan, is whether you are returning more rows than is necessary. If the number of rows returned is higher than you expect, that's a strong indication that you need to fine-tune the WHERE clause
-of your query so that only those rows that are actually needed are returned. Returning unnecessary rows wastes SQL Server resources and hurts overall performance.
+An obvious question to ask, if you see an Index Scan in your execution plan, is whether you are returning more rows than is necessary. If the number of rows returned is higher than you expect, that's a strong indication that you need to fine-tune the WHERE clause of your query so that only those rows that are actually needed are returned. Returning unnecessary rows wastes SQL Server resources and hurts overall performance.
+
+In a scan operation, SQL Server navigates down to the first or last leaf-level page of the index and then scans forward or backward through the leaf pages. A scan often reads all the pages in the leaf level of the index, but may read only a portion of the index in some cases.
+
+A scan often occurs when all rows need to be read to satisfy the definition of the query. You can also see a scan when so many rows need to be read that scanning them all would take less time than navigating the index structure to find them (a.k.a. "seeking," discussed shortly). Sometimes, the optimizer chooses a scan because there is no usable index for the Predicate columns, or because the query is written in such a way that performing a seek against the index is not possible (for example, a function against a column will lead to scans).
+
+
 
 # Clustered Index Seek
 
