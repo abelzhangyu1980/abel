@@ -1,0 +1,47 @@
+Packet Traveling
+
+OSI Layer 1 – Physical
+The Physical layer of the OSI model is responsible for the transfer of bits — the 1’s and 0’s which make up all computer code.
+
+This layer represents the physical medium which is carrying the traffic between two nodes. An example would be your Ethernet cable or Serial Cable. But don’t get too caught up on the word “Physical” — this layer was named in the 1970s, long before wireless communication in networking was a concept. As such, WiFi, despite it not having a physical, tangible presence, is also considered a Layer 1 protocol.
+
+Simply put, Layer 1 is anything that carries 1’s and 0’s between two nodes.
+
+OSI Layer 2 – Data Link
+The Data Link layer of the OSI model is responsible for interfacing with the Physical layer. Effectively, Layer 2 is responsible for putting 1’s and 0’s on the wire, and pulling 1’s and 0’s from the wire.
+
+The Network Interface Card (NIC) that you plug your Ethernet wire into handles the Layer 2 functionality. It receives signals from the wire, and transmits signals on to the wire.
+
+Your WiFi NIC works the same way, receiving and transmitting radio waves which are then interpreted as a series of 1’s and 0’s.
+
+Layer 2 will then group together those 1’s and 0’s into chunks known as Frames.
+
+There is an addressing system that exists at Layer 2 known as the Media Access Control address, or MAC address. 
+The MAC address uniquely identifies each individual NIC. Each NIC is pre-configured with a MAC address by the 
+manufacturer; in fact, it is sometimes referred to as the Burned In Address (BIA).
+
+Aside from your NIC, a Switch also operates at this layer. A Switch’s primary responsibility is to facilitate communication within Networks 
+The overarching function of the Data Link layer is to deliver packets from one NIC to another. Or to put it another way, the role of Layer 2 is to deliver packets from hop to hop.
+
+OSI Layer 3 – Network
+The Network layer of the OSI model is responsible for packet delivery from end to end.
+
+It does this by using another addressing scheme that can logically identify every node connected to the Internet. This addressing scheme is known as the Internet Protocol address, or the IP Address.
+
+It is considered logical because an IP address is not a permanent identification of a computer. 
+Unlike the MAC address which is considered a physical address, the IP address is not burned into any computer hardware by the manufacturer.
+
+Routers are Network Devices that operate at Layer 3 of the OSI model. A Router’s primary responsibility is to facilitate communication between Networks. As such, a Router creates a boundary between two networks. In order to communicate with any device not directly in your network, a router must be used.
+
+OSI Model – Layer 2 vs. Layer 3
+The interaction and distinction between Layer 2 and Layer 3 is crucial to understanding how data flows between two computers. For example, if we already have a unique L2 addressing scheme on every NIC (like MAC addresses), why do we need yet another addressing scheme at L3 (like IP addresses)? Or vice versa?
+
+The answer is that both addressing schemes accomplish different functions:
+
+Layer 2 uses MAC addresses and is responsible for packet delivery from hop to hop.
+Layer 3 uses IP addresses and is responsible for packet delivery from end to end.
+When a computer has data to send, it encapsulates it in a IP header which will include information like the Source and Destination IP addresses of the two “ends” of the communication.
+
+The IP Header and Data are then further encapsulated in a MAC address header, which will include information like the Source and Destination MAC address of the current “hop” in the path towards the final destination.
+
+![image]packtrav-l2-vs-l3.gif
