@@ -96,6 +96,7 @@ A Router is a network device whose primary purpose is to facilitate communicatio
 
 Routers operate at Layer 3 of the OSI Model, which means they only look into each datagram up to the Layer 3 header. The Layer 3 header contains information that enables end to end delivery, such as the Source and Destination IP Address.
 
+![router](packtrav-router-l3.png)
 
 
 
