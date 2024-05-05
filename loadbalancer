@@ -28,4 +28,20 @@ once request reaches SLB, SLB changes mac address to real server's mac address o
 real server handles request and return data to client directly without using slb.
 172.12.1.1/1.10.1.11
 
+At layer 2, load balancing can distribute traffic among the machines on the same network. But, as we discussed,
+it only routes traffic based on MAC addresses. 
+It’s impossible to route traffic to another device on a different network using L2 load balancing.
+There are many scenarios when this kind of load balancing is helpful. 
+One such use case divides the bandwidth equally to all devices within the network.
 
+In contrast, L3 load balancers operate at a higher level, making it possible to route traffic using IPv4 and IPv6
+addresses. Organizations use them to distribute the load across different virtual machines. 
+They ensure high availability and reliability by circulating requests among servers or VMs.
+
+In contrast to L2 and L3 load balancers, L7 load balancers are software that operates at the application layer. Popular L7 load balancing tools include Nginx and HAProxy. Many of them are open source, making it easy to add SSL termination and implement new protocols like HTTP/3.
+
+L7 load balancers can also use extra information available at the application layer to carry out complex and intelligent load balancing. They can read the content of incoming HTTP(S) and use that data to route the request directly to where it needs to go. Most L7 load balancers also can define rules and targets to achieve the expected routing.
+
+The main disadvantage of L7 load balancers is that they usually act as proxies, 
+so they must maintain two open connections: one to the machine that made the request and one to the target machine
+that is serving the request. L2 and L3 load balancers, in comparison, simply forward packets to their destination.
