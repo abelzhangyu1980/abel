@@ -1,0 +1,31 @@
+NAT vs Direct Server return 
+
+client -- SLB -- Server
+
+source ip/target ip
+1.10.1.11/9.0.0.1 
+
+once request reaches SLB, SLB changes target ip to real server ip 
+1.10.1.11/172.12.1.1
+
+real server handles request and return data to SLB via default router 
+172.12.1.1/1.10.1.11
+
+slb changes source ip to vip.
+9.0.0.1/1.10.1.11
+
+with direct server return. response data won't be handled by SLB. to achieve this, the same vip is configured on both SLB server and real server(s). as the same MAC can't be bind to more than one IPs, special lookback address
+172.0.0.1 is utilised to caryy the same vip.
+
+in this  case. data flow like below.
+client -- SLB -- Server
+
+source ip/target ip
+1.10.1.11/9.0.0.1/mac address 00:00...abc
+
+once request reaches SLB, SLB changes mac address to real server's mac address on layer 2. 
+1.10.1.11/9.0.0.1/mac address 00:00...def
+real server handles request and return data to client directly without using slb.
+172.12.1.1/1.10.1.11
+
+
