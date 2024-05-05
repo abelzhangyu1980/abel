@@ -45,3 +45,5 @@ L7 load balancers can also use extra information available at the application la
 The main disadvantage of L7 load balancers is that they usually act as proxies, 
 so they must maintain two open connections: one to the machine that made the request and one to the target machine
 that is serving the request. L2 and L3 load balancers, in comparison, simply forward packets to their destination.
+![lb](packtrav-l2-vs-l3.gif)
+
