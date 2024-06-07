@@ -19,9 +19,62 @@
 
 # The salesforce value chain
   prospecting            lead generation & conversion        sales                                                     back office/support
+
+
   pipeline creation      discovery & qualification           solution design/negotiation/review closed won/lost        open issue, closed issue
 
 # Salesforce customer 360
+
+# Typical ways into salesforce
+## Salesforce Administrator
+   * organizational setup
+   * user setup
+   * security & access
+   * standard & custom objects
+   * sales & marketing apps
+   * service & support apps
+   * activity managment & collaboration
+   * data management
+   * analytics - reports & dashboards
+   * workflow / process automation
+   * desktop & mobile administration
+   * appExchange
+### Advanced Administrator
+* security & access
+* extending custom objects & apps
+* auditing & monitoring
+* sales cloud apps
+* service cloud apps
+* data management
+* content management
+* change management
+* analytics, reports and dashboards
+* process automation
+## Salesforce developer (app developer , code developer)
+### app builder
+#### platform app builder
+* busienss logic and process automation
+* data modeling and managment
+* salefroce fundamentals
+* security
+* user interface
+* reporting
+* mobile
+* app development
+* social
+## Technical Consultant
+## Functional Consultant
+## Business Analyst 
+## Solution architect
+## Technical Architect
+
+# where should I srtart from?
+## what should I start learning? 
+84% sales cloud , chatter 72%  66% saleforce plateform, 57% service cloud 46% saleforce lightning
+
+
+
+
 
    
 
