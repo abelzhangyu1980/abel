@@ -1,4 +1,4 @@
-# salesforc functional capability
+# salesforce functional capability
    ## marketing
       lead generation, drip marketing, website integration, campaign management, campaign testing, marketing automation, email marketing, mobile messaging, social media
       marketing, digital adveertising, customer interactions, customer segmentation, compaign optimization, contentm management, journey management.
