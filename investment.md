@@ -45,6 +45,29 @@ Capital Gain=Sale Price−Cost Base
 Discounted Capital Gain=Capital Gain×0.5
 Add the net capital gain to your assessable income and pay tax at your marginal rate.
 
+## LMI - Lender Morgage Insurance
+贷款超过房价80%银行要求买的保险。
+
+## NSW TOD -Transport oriented development
+rezone的31个区域。
+https://www.planning.nsw.gov.au/sites/default/files/2023-12/transport-oriented-development-program.pdf
+Land within 1,200 metres of 8 rail and metro stations will be rezoned by the NSW Government to 
+allow for more new and affordable homes. These 8 stations are: 
+Bankstown, Bays West, Bella Vista, Crows Nest, Homebush Hornsby, Kellyville and Macquarie 
+Park. 
+Part 2 of the program will focus on precincts that have existing infrastructure and are located within 
+400 metres of 31 stations to create capacity for 138,000 new homes over 15 years. 
+New planning controls, delivered through a new State Environment Planning Policy (SEPP) will 
+enable faster delivery of more housing close to jobs and amenity. These 31 locations are: 
+Adamstown station, Ashfield station, Banksia station, Berala station, Booragul station, 
+Canterbury metro station, Corrimal station, Croydon station, Dapto station, Dulwich Hill station, 
+Gordon station, Gosford station, Hamilton station, Killara station, Kogarah station, Kotara 
+station, Lidcombe station, Lindfield station, Marrickville station, Morisset station, Newcastle 
+Interchange, North Strathfield metro station, North Wollongong station, Rockdale station, 
+Roseville station, St Marys metro station, Teralba station, Tuggerah station, Turrella station, 
+Wiley Park metro station and Wyong station.
+
+
 
 
 
