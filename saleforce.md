@@ -72,6 +72,22 @@
 ## what should I start learning? 
 84% sales cloud , chatter 72%  66% saleforce plateform, 57% service cloud 46% saleforce lightning
 
+# Platform developer
+## relationships
+### Lookup relationship vs master Detail
+lookup is a loosely coupled relationship,allowing you to connect one object to another in a one-to-many fashion.
+i.e a sales order object may be related to a store object. each sales order is related to one store and each store is related to one or more sales orders.
+the sales order and store object can exist independently.
+you can have a maximum of 40 lookups on an object.
+
+master detail relationship is a strongly coupled relationship , meaning if the parent is deleted, so are the child objects.
+master-detail also allows the parent record to control child record atributes such as sharing and visiblity. whichever security setting you chose
+for the parent record, the child record inherits.
+i.e room -> event. 
+you can have a maximum of two master details on an object.
+
+
+
 
 
 
