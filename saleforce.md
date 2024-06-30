@@ -86,6 +86,14 @@ for the parent record, the child record inherits.
 i.e room -> event. 
 you can have a maximum of two master details on an object.
 
+### many to many
+many to many relationship allow two objects to be related to each other when a record from one object can be linked to multple records from another objects
+and vice versa.
+two master-detail relationships can be used to create a many-to-many relationship between two objects. a many-to-many relationship simply allow the master
+record to have mutiple detail records and the detail records to have multiple master or parent records. 
+ie. job position <-- job application --> candidate
+
+
 
 
 
