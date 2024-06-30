@@ -113,8 +113,28 @@ can be created on user object to allow relating one user to another
 - user object
 - usage
 
+## External Object
+External objects are similar to custom objects except that they map to data that's stored outside of saleforce org. 
+it relies on an external data source definition to connect with the external system's data.
 
+## Validation rules
+validtion rules verify that the data a user enters in a record meets the standards you specify before the user can save the record.
 
+--if user has choosen a specific value and the other field is blank, then show a validation error.
+i.e ISPICKVAL(field,specific picklist value) && ISBlank(..));
+
+# Importing and Exporting Data
+## Importing data into development environment
+- data import wizard
+  up to 50K records
+- data loader
+  cli 
+  can import large files that contain up to 5m records (csv)
+## Exporting data 
+- data loader
+- exporting data via reports
+
+- 
 
 
 
