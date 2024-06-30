@@ -74,6 +74,16 @@
 
 # Platform developer
 ## relationships
+
+lookup, master-detail, many to many, exernal lookup, indirect lookup , hierarchical
+
+### one to many  (parent - child)
+manager --> position 
+manage --> employee
+school --> students
+position -> application
+relationship always go with child object.
+
 ### Lookup relationship vs master Detail
 lookup is a loosely coupled relationship,allowing you to connect one object to another in a one-to-many fashion.
 i.e a sales order object may be related to a store object. each sales order is related to one store and each store is related to one or more sales orders.
@@ -92,6 +102,16 @@ and vice versa.
 two master-detail relationships can be used to create a many-to-many relationship between two objects. a many-to-many relationship simply allow the master
 record to have mutiple detail records and the detail records to have multiple master or parent records. 
 ie. job position <-- job application --> candidate
+doctor <--> patient
+
+a junction object which has two master detail relationship
+
+job application will be the junction object. job position (master) --- job application (detail) --- candidate(master)
+
+### Hierarchical relationship
+can be created on user object to allow relating one user to another 
+- user object
+- usage
 
 
 
