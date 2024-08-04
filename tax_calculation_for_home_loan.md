@@ -3,16 +3,20 @@
 * Minimum payment amount: $5,864.41
 * available cash: 300K
 * annual taxable income: 190K
+
 ** total tax to pay: 56K
+
 * saving interest rate: 5.2%
 * rental income: 36K
 
 
 * If no offset:
+  
 ** total to pay first year: 60K
 ** total interest to pay: 57K
 
-if put 300K into offset:
+* if put 300K into offset:
+
 ** total to pay first year: 44K
 ** total interest to pay: 36K
 
