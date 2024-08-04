@@ -2,9 +2,7 @@
 * home loan rate: 6.17%(P&I)
 * Minimum payment amount: $5,864.41
 * available cash: 300K
-* annual taxable income: 190K
-
-** total tax to pay: 56K
+* annual taxable income: 190K (total tax to pay: 56K, from ATO)
 
 * saving interest rate: 5.2%
 * rental income: 36K
@@ -12,13 +10,13 @@
 
 * If no offset:
   
-** total to pay first year: 60K
-** total interest to pay: 57K
+- total to pay first year: 60K
+-  total interest to pay: 57K
 
 * if put 300K into offset:
 
-** total to pay first year: 44K
-** total interest to pay: 36K
+- total to pay first year: 44K
+-  total interest to pay: 36K
 
 which means I can save up to 21K with offset.
 
