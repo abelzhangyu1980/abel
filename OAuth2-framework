@@ -1,0 +1,143 @@
+# Client registration
+Before initiating the protocol, the client registers with the    authorization server.  The means through which the client registers    with the authorization server are beyond the scope of this    specification but typically involve end-user interaction with an HTML
+   registration form.   Client registration does not require a direct interaction between the    client and the authorization server.  When supported by the    authorization server, registration can rely on other means for    establishing trust and obtaining the required client properties
+   (e.g., redirection URI, client type).  For example, registration can   be accomplished using a self-issued or third-party-issued assertion,    or by the authorization server performing client discovery using a    trusted channel.
+
+ When registering a client, the client developer SHALL:
+
+ - specify the client type as described in Section 2.1,
+ - provide its client redirection URIs as described in Section 3.1.2, and
+ - include any other information required by the authorization server (e.g., application name, website, description, logo image, the       acceptance of legal terms).
+
+## Client Types
+   OAuth defines two client types, based on their ability to    authenticate securely with the authorization server (i.e., ability to    maintain the confidentiality of their client credentials): 
+### confidential
+      Clients capable of maintaining the confidentiality of their       credentials (e.g., client implemented on a secure server with       restricted access to the client credentials), or capable of secure       client authentication using other means.
+
+### public
+      Clients incapable of maintaining the confidentiality of their       credentials (e.g., clients executing on the device used by the       resource owner, such as an installed native application or a web       browser-based application), and incapable of secure client      authentication via any other means.
+
+## Client Identifier
+The authorization server issues the registered client a client    identifier -- a unique string representing the registration    information provided by the client.  The client identifier is not a    secret; it is exposed to the resource owner and MUST NOT be used
+   alone for client authentication.  The client identifier is unique to    the authorization server.
+
+   The client identifier string size is left undefined by this    specification.  The client should avoid making assumptions about the    identifier size.  The authorization server SHOULD document the size    of any identifier it issues.
+
+## Protocol Endpoints
+   The authorization process utilizes two authorization server endpoints    (HTTP resources):
+
+ - Authorization endpoint - used by the client to obtain authorization from the resource owner via user-agent redirection.
+ - Token endpoint - used by the client to exchange an authorization  grant for an access token, typically with client authentication.
+ - As well as one client endpoint: Redirection endpoint - used by the authorization server to return responses containing authorization credentials to the client via the resource owner user-agent.
+
+### Authorization Endpoint
+The authorization endpoint is used to interact with the resource    owner and obtain an authorization grant.  The authorization server    MUST first verify the identity of the resource owner.
+
+#### Redirection Endpoint
+After completing its interaction with the resource owner, the    authorization server directs the resource owner's user-agent back to    the client.  The authorization server redirects the user-agent to the    client's redirection endpoint previously established with the
+   authorization server during the client registration process or when    making the authorization request.
+
+## Token Endpoint
+The token endpoint is used by the client to obtain an access token by    presenting its authorization grant or refresh token.  The token    endpoint is used with every authorization grant except for the    implicit grant type (since an access token is issued directly).
+   The means through which the client obtains the location of the token    endpoint are beyond the scope of this specification, but the location    is typically provided in the service documentation. 
+
+## Obtaining Authorization
+To request an access token, the client obtains authorization from the    resource owner.  The authorization is expressed in the form of an    authorization grant, which the client uses to request the access    token.  OAuth defines four grant types: authorization code, implicit,
+   resource owner password credentials, and client credentials.  It also    provides an extension mechanism for defining additional grant types.
+
+### Authorization Code Grant
+The authorization code grant type is used to obtain both access    tokens and refresh tokens and is optimized for confidential clients.    Since this is a redirection-based flow, the client must be capable of    interacting with the resource owner's user-agent (typically a web
+   browser) and capable of receiving incoming requests (via redirection)    from the authorization server.
+
+     +----------+
+     | Resource |
+     |   Owner  |
+     |          |
+     +----------+
+          ^
+          |
+         (B)
+     +----|-----+          Client Identifier      +---------------+
+     |         -+----(A)-- & Redirection URI ---->|               |
+     |  User-   |                                 | Authorization |
+     |  Agent  -+----(B)-- User authenticates --->|     Server    |
+     |          |                                 |               |
+     |         -+----(C)-- Authorization Code ---<|               |
+     +-|----|---+                                 +---------------+
+       |    |                                         ^      v
+      (A)  (C)                                        |      |
+       |    |                                         |      |
+       ^    v                                         |      |
+     +---------+                                      |      |
+     |         |>---(D)-- Authorization Code ---------'      |
+     |  Client |          & Redirection URI                  |
+     |         |                                             |
+     |         |<---(E)----- Access Token -------------------'
+     +---------+       (w/ Optional Refresh Token)
+
+   Note: The lines illustrating steps (A), (B), and (C) are broken into
+   two parts as they pass through the user-agent.
+
+                     Figure 3: Authorization Code Flow
+
+Authorization
+
+The first step of OAuth 2 is to get authorization from the user. For browser-based or mobile apps, this is usually accomplished by displaying an interface provided by the service to the user.
+
+# OAuth 2 provides several "grant types" for different use cases. The grant types defined are:
+ - Authorization Code for apps running on a web server, browser-based and mobile apps
+ - Password for logging in with a username and password (only for first-party apps)
+ - Client credentials for application access without a user present
+ - Implicit was previously recommended for clients without a secret, but has been superseded by using the Authorization Code grant with PKCE
+
+
+## Web Server Apps
+
+Web server apps are the most common type of application you encounter when dealing with OAuth servers. Web apps are written in a server-side language and run on a server where the source code of the application is not available to the public. This means the application is able to use its client secret when communicating with the authorization server, which can help avoid many attack vectors.
+
+basically it's used by app code to start the auth process and user will be asked by service provider to either accept or deny the request. if approved, service will return a grant token.
+https://authorization-server.com/auth?response_type=code&
+  client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos&state=1234zyx
+
+https://example-app.com/cb?code=AUTH_CODE_HERE&state=1234zyx
+
+then request access token:
+our server exchanges the authorization code for an access token by making a POST request to the authorization server's token endpoint:
+POST https://api.authorization-server.com/token
+  grant_type=authorization_code&
+  code=AUTH_CODE_HERE&
+  redirect_uri=REDIRECT_URI&
+  client_id=CLIENT_ID&
+  client_secret=CLIENT_SECRET
+
+and server returns access token:
+{
+  "access_token":"RsT5OjbzRn430zqMLgV3Ia",
+  "expires_in":3600
+}
+
+## Single-Page Apps -- running in browser
+Since the entire source code is available to the browser, they cannot maintain the confidentiality of a client secret, so the secret is not used in this case. The flow is based on the authorization code flow above, but with the addition of a dynamically generated secret used on each request. This is known as the PKCE extension.
+https://authorization-server.com/auth?response_type=code&
+  client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos&state=1234zyx&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
+
+code_challenge - The URL-safe base64-encoded SHA256 hash of the secret
+code_challenge_method=S256 - Indicate which hashing method you used (S256)
+
+Getting an Access Token
+
+Now you'll need to exchange the authorization code for an access token, but instead of providing a pre-registered client secret, you send the PKCE secret you generated at the beginning of the flow.
+
+POST https://api.authorization-server.com/token
+  grant_type=authorization_code&
+  code=AUTH_CODE_HERE&
+  redirect_uri=REDIRECT_URI&
+  client_id=CLIENT_ID&
+  code_verifier=CODE_VERIFIER
+
+    grant_type=authorization_code - The grant type for this flow is authorization_code
+    code=AUTH_CODE_HERE - This is the code you received in the query string
+    redirect_uri=REDIRECT_URI - Must be identical to the redirect URI provided in the original link
+    client_id=CLIENT_ID - The client ID you received when you first created the application
+    code_verifier=CODE_VERIFIER - The random secret you generated at the beginning
+
