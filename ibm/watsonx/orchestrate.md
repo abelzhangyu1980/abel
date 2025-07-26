@@ -20,4 +20,12 @@ how to setup connections to external applications
  via command line or gui
 
  then ask ai to create the code for the tool....
+
+ how to install and configure ADK
+
+ then add your wation x server to the adk env.
+ activate the env --- your api key 
+ 
+ 
+ so basically we install and configure ADK on local and then use command lines to create agents/tools...
  
