@@ -28,4 +28,12 @@ how to setup connections to external applications
  
  
  so basically we install and configure ADK on local and then use command lines to create agents/tools...
+
+ watsonx.ai
+ watson.data
+ watsonx.assistant
+ watsonx.orchestrate
+ watsonx.code assistant
+ 
+ 
  
