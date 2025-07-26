@@ -11,5 +11,5 @@ create tool(s)
 create agent
    references to tools
    define which llm model to use
-   behaviour -- prompt --- tell which tool to be used for the conversational text.
+   behaviour -- prompt --- tell which tool to be used for the conversational text. use llm to extract the data from human words and then feed the data into tools.
   
