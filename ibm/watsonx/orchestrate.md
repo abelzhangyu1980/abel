@@ -1,0 +1,15 @@
+# automation framework
+  to connect to existing apps via api calls.
+  connector, team, apps, skills. skill flow
+# conversational framework
+  ai powered framework to allow conversational way to interact with apps.
+
+
+watsonx ADK
+
+create tool(s)
+create agent
+   references to tools
+   define which llm model to use
+   behaviour -- prompt --- tell which tool to be used for the conversational text.
+  
