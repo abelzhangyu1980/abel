@@ -8,6 +8,7 @@
 watsonx ADK
 
 create tool(s)
+   tools act as the bridge between the orchestrate and the implementation (basically a wrapper which knows how to connect to the service and how to call the service).
 create agent
    references to tools
    define which llm model to use
